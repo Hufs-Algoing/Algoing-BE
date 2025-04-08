@@ -44,7 +44,7 @@ public class AISolved {
     private String pattern;
 
     @OneToOne
-    @JoinColumn(name="problem_num")
+    @JoinColumn(name="problem_id")
     private Problem problem;
 
 }

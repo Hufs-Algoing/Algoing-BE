@@ -13,12 +13,13 @@ import lombok.NoArgsConstructor;
 public class Problem {
     @Id
     @Column(name = "problem_id", nullable = false, unique = true)
-    private Long id;
-
-    @Column(name = "problem_num" , nullable = false, unique = true)
-    private Long problemNum;
+    private Long problemId;
 
     private String title;
+
+    @Column(name = "description")
+    @Lob
+    private String description;
 
     private String tag;
 
@@ -34,15 +35,10 @@ public class Problem {
     @Column(name = "output")
     private String output;
 
-    @Column(name = "content")
-    @Lob
-    private String content;
-
     @Builder
-    public Problem(Long id, Long problemNum, String title, String tag, Long time, Long memory, Long level,
-                   String input, String output, String content) {
-        this.id = id;
-        this.problemNum = problemNum;
+    public Problem(Long problemId, String title, String tag, Long time, Long memory, Long level,
+                   String input, String output, String description) {
+        this.problemId = problemId;
         this.title = title;
         this.tag = tag;
         this.time = time;
@@ -50,6 +46,6 @@ public class Problem {
         this.level = level;
         this.input = input;
         this.output = output;
-        this.content = content;
+        this.description = description;
     }
 }

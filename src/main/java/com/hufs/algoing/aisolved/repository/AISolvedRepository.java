@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AISolvedRepository extends JpaRepository<AISolved, Long> {
 
-     AISolved findByProblem_ProblemNum(Long problemNum);
+     AISolved findByProblem_ProblemId(Long problemId);
 }

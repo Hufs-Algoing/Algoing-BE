@@ -62,7 +62,7 @@ public class GPTService {
 
     private Mono<Void> analyzeAndSave(Problem problem) {
 
-        log.info("분석 시작 - 문제: {}, Thread: {}", problem.getProblemNum(), Thread.currentThread().getName());
+        log.info("분석 시작 - 문제: {}, Thread: {}", problem.getProblemId(), Thread.currentThread().getName());
         ObjectNode requestBody = objectMapper.createObjectNode();
         requestBody.put("model", "gpt-4o-mini");
 
@@ -76,7 +76,7 @@ public class GPTService {
 
         ArrayNode messages = objectMapper.createArrayNode();
         messages.add(createMessage("system", getInstruction("analyzeInstructions.md")));
-        messages.add(createMessage("user", "problem:" + problem.getContent()));
+        messages.add(createMessage("user", "problem:" + problem.getDescription()));
         messages.add(createMessage("user", "Input, Output\n" + inputOutputJson.toPrettyString()));
         messages.add(createMessage("user", "Time limit, Memory limit\n" + constraintsJson.toPrettyString()));
 
