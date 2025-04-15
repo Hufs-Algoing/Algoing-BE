@@ -2,19 +2,25 @@ package com.hufs.algoing.user.service;
 
 import com.hufs.algoing.solvedac.entity.SolvedAcProfile;
 import com.hufs.algoing.solvedac.service.SolvedAcService;
+import com.hufs.algoing.user.dto.UserDTO;
 import com.hufs.algoing.user.entity.User;
 import com.hufs.algoing.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class UserService {
 
     @Autowired
     private SolvedAcService solvedAcService;
 
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
     @Autowired
-    private UserRepository userRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public void updateUserData(String handle) {
         // solved.ac API로부터 유저 정보 가져오기
@@ -29,9 +35,12 @@ public class UserService {
 
     }
 
-    public User getUserByHandle(String handle) {
-        // handle을 이용하여 User 엔티티를 조회
-        return (User) userRepository.findByHandle(handle)
-                .orElseThrow(() -> new RuntimeException("User not found with handle: " + handle));
+    //회원가입
+
+    public Long signup(UserDTO userDTO) {
+        return userRepository.save(User.builder()
+                .email(userDTO.getEmail())
+                .password(bCryptPasswordEncoder.encode(userDTO.getPassword()))
+                .build()).getUserId();
     }
 }

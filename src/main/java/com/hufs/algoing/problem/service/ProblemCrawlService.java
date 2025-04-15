@@ -21,6 +21,7 @@ public class ProblemCrawlService{
             Document doc = Jsoup.connect(url).get();
 
 
+
             return Problem.builder()
                     .problemId(problemId)
                     .title(doc.select("#problem_title").text())
@@ -33,8 +34,8 @@ public class ProblemCrawlService{
                     .sampleOutput1(doc.select("#sample-output-1").html())
                     .sampleOutput2(doc.select("#sample-output-2").html())
                     .tag("tag") // 태그는 크롤링하지 않음
-                    .time(0L) // 시간 제한은 크롤링하지 않음
-                    .memory(0L) // 메모리 제한은 크롤링하지 않음
+                    .time(doc.select("#problem-info tbody td:first-child").text()) // 시간 제한은 크롤링하지 않음
+                    .memory(doc.select("#problem-info tbody td:nth-child(2)").text()) // 메모리 제한은 크롤링하지 않음
                     .level(0L) // 난이도는 크롤링하지 않음
                     .build();
 

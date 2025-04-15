@@ -20,30 +20,38 @@ public class Problem {
     @Lob
     private String description;
 
+    @Lob
     private String input;
 
+    @Lob
     private String output;
 
+    @Lob
     private String sampleInput1;
 
+    @Lob
     private String sampleIntput2;
 
+    @Lob
     private String sampleOutput1;
 
+    @Lob
     private String sampleOutput2;
 
+    @Lob
     private String tag;
 
-    private Long time;
+    private String time;
 
-    private Long memory;
+    private String memory;
 
     private Long level;
 
+    @Lob
     private String limit;
 
     @Builder
-    public Problem(Long problemId, String title, String tag, Long time, Long memory, Long level,
+    public Problem(Long problemId, String title, String tag, String time, String memory, Long level,
                    String input, String output, String description, String sampleInput1, String sampleIntput2, String sampleOutput1, String sampleOutput2, String limit) {
         this.problemId = problemId;
         this.title = title;
@@ -60,19 +68,4 @@ public class Problem {
         this.description = description;
         this.limit = limit;
     }
-
-
-//    @Builder
-//    public Problem(Long problemId, String title, String tag, Long time, Long memory, Long level,
-//                   String input, String output, String description) {
-//        this.problemId = problemId;
-//        this.title = title;
-//        this.tag = tag;
-//        this.time = time;
-//        this.memory = memory;
-//        this.level = level;
-//        this.input = input;
-//        this.output = output;
-//        this.description = description;
-//    }
 }

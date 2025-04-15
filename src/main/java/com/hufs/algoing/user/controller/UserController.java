@@ -2,6 +2,7 @@ package com.hufs.algoing.user.controller;
 
 import com.hufs.algoing.solvedac.entity.SolvedAcProfile;
 import com.hufs.algoing.solvedac.service.SolvedAcService;
+import com.hufs.algoing.user.dto.UserDTO;
 import com.hufs.algoing.user.entity.User;
 import com.hufs.algoing.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
