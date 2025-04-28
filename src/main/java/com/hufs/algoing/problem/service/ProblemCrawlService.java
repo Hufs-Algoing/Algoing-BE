@@ -26,11 +26,11 @@ public class ProblemCrawlService{
                     .problemId(problemId)
                     .title(doc.select("#problem_title").text())
                     .description(doc.select("#problem_description").html())
-                    .limit(doc.select("#problem_limit").html())
+                    //.limit(doc.select("#problem_limit").html())
                     .input(doc.select("#problem_input p").text())
                     .output(doc.select("#problem_output p").text())
                     .sampleInput1(doc.select("#sample-input-1").html())
-                    .sampleIntput2(doc.select("#sample-input-2").html())
+                    .sampleInput2(doc.select("#sample-input-2").html())
                     .sampleOutput1(doc.select("#sample-output-1").html())
                     .sampleOutput2(doc.select("#sample-output-2").html())
                     .tag("tag") // 태그는 크롤링하지 않음
