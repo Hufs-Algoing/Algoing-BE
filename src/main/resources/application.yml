@@ -2,24 +2,44 @@ spring:
   config:
     import: optional:file:.env[.properties]
 
-  h2:
-    console:
-      path: /h2-console
-      enabled: 'true'
   datasource:
-    password: ''
-    driver-class-name: org.h2.Driver
-    username: sa
-    url: jdbc:h2:mem:testdb
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
-      ddl-auto: create
-    show-sql: 'true'
-    database-platform: org.hibernate.dialect.H2Dialect
+      ddl-auto: update
     properties:
       hibernate:
-        format_sql: 'true'
-        #globally_quoted_identifiers : 'true'
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        auto_quote_keyword: true
+        globally_quoted_identifiers : true
+    show-sql: true
+
+
+      #  h2:
+      #   console:
+      #    path: /h2-console
+      #   enabled: 'true'
+      #datasource:
+      # password: ''
+      # driver-class-name: org.h2.Driver
+      # username: sa
+      # url: jdbc:h2:mem:testdb
+      #jpa:
+      #hibernate:
+      #  ddl-auto: update
+      #show-sql: 'true'
+      #database-platform: org.hibernate.dialect.H2Dialect
+      #properties:
+      # hibernate:
+      #  format_sql: 'true'
+      #globally_quoted_identifiers : 'true'
+
+
 
 openai:
   secret: ${AI_KEY}
