@@ -13,7 +13,7 @@ spring:
     url: jdbc:h2:mem:testdb
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: 'true'
     database-platform: org.hibernate.dialect.H2Dialect
     properties:

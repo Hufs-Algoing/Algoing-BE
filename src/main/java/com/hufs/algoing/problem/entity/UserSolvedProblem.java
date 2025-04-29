@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "user_solved_problem")
+
 public class UserSolvedProblem {
     @Id
     @Column(name = "user_solved_problem_id", nullable = false, unique = true)
