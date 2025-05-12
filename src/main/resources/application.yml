@@ -19,28 +19,6 @@ spring:
         globally_quoted_identifiers : true
     show-sql: true
 
-
-      #  h2:
-      #   console:
-      #    path: /h2-console
-      #   enabled: 'true'
-      #datasource:
-      # password: ''
-      # driver-class-name: org.h2.Driver
-      # username: sa
-      # url: jdbc:h2:mem:testdb
-      #jpa:
-      #hibernate:
-      #  ddl-auto: update
-      #show-sql: 'true'
-      #database-platform: org.hibernate.dialect.H2Dialect
-      #properties:
-      # hibernate:
-      #  format_sql: 'true'
-      #globally_quoted_identifiers : 'true'
-
-
-
 openai:
   secret: ${AI_KEY}
   url: ${AI_URL}
@@ -48,3 +26,12 @@ openai:
 logging:
   level:
     root: INFO
+
+springdoc:
+  override-with-generic-response: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: method
+    tags-sorter: alpha
+    path: "swagger.html" # http://localhost:8080/swagger.html로 접속 가능
