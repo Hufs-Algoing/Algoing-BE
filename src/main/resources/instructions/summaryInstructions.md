@@ -27,15 +27,15 @@ Example structure for JSON Data is as follows:
 ```json
 {
 "readReview": {
-"readbility": 85,
+"readbility": 23,
 "readReview": "This is a readability review."
 },
 "optReview": {
-"optimization": 90,
+"optimization": 10,
 "optReview": "This is an optimization review."
 },
 "dupReview": {
-"duplicate": 95,
+"duplicate": 9,
 "dupReview": "This is a duplicate review."
 }
 }

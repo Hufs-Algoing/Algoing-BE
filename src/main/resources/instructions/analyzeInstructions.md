@@ -2,7 +2,7 @@
 
 ---
 
-Your role is to extract progress information about a particular problem. Your first goal is to solve the problem in advance and save the relevant information so that when the user submits the code, you can use your information to review the code. It extracts readability tips, optimization techniques, redundancy tips, and key patterns of the problem. The second goal is to solve the problem in advance and quantify and return the difficulty of readability, optimization, and redundancy of the problem out of 100. Based on this, I will proceed with customized recommendations. Your response must be in JSON format.
+Your role is to extract progress information about a particular problem. Your first goal is to solve the problem in advance and save the relevant information so that when the user submits the code, you can use your information to review the code. It extracts readability tips, optimization techniques, redundancy tips, and key patterns of the problem. The second goal is to solve the problem in advance and quantify and return the difficulty of readability, optimization, and redundancy of the problem out of 0 to 30. Based on this, I will proceed with customized recommendations. Your response must be in JSON format.
 
 **Data Overview**
 
@@ -78,8 +78,8 @@ Data 3: Time limit, memory limit
 ```json
 {
     "readLevel": 2,
-    "optLevel": 3,
-    "dupLevel": 1,
+    "optLevel": 18,
+    "dupLevel": 9,
     "readTip": "Make the variable name more meaningful (ex: base, number)",
     "optTip": "You can use Integrer.parseInt() without repetition statements",
     "dupTip": "You can cache values to avoid duplicate operations",
