@@ -1,15 +1,22 @@
 package com.hufs.algoing.user.service;
 
+import com.hufs.algoing.problem.dto.UserSolvedProblemDTO;
+import com.hufs.algoing.problem.entity.Problem;
 import com.hufs.algoing.solvedac.dto.SolvedAcProfileDTO;
 import com.hufs.algoing.solvedac.service.SolvedAcService;
 import com.hufs.algoing.user.dto.UserDTO;
 import com.hufs.algoing.user.entity.User;
 import com.hufs.algoing.user.repository.UserRepository;
+import com.hufs.algoing.problem.repository.UserSolvedProblemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static com.hufs.algoing.problem.entity.QProblem.problem;
 
 @RequiredArgsConstructor
 @Service
@@ -22,6 +29,8 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private final UserSolvedProblemRepository userSolvedProblemRepository;
 
     public void updateUserData(String handle) {
         // solved.ac API로부터 유저 정보 가져오기
@@ -63,5 +72,29 @@ public class UserService {
 
         // 생성된 ID를 반환
         return user.getUserId();
+    }
+
+
+    //mypage: 유저가 푼 문제 조회
+    public List<UserSolvedProblemDTO> searchUserSolve(long userId){
+
+        //유저 정보 확인
+        User user=userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 없습니다."));
+
+        // 유저가 푼 문제 가져오기
+        return userSolvedProblemRepository.findByUserId(user)
+                .stream()
+                .map(entity -> new UserSolvedProblemDTO(
+                        entity.getUserSolvedId(),
+                        entity.getUserId().getUserId(),
+                        entity.getProblemId().getProblemId(),
+                        entity.getProblemId().getTitle(),
+                        entity.getAnswer(),
+                        entity.getProblemId().getTag(),
+                        entity.getProblemId().getLevel(),
+                        entity.getSolvedAt()
+                ))
+                .toList();
     }
 }
