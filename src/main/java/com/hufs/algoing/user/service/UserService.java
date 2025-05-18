@@ -1,5 +1,7 @@
 package com.hufs.algoing.user.service;
 
+import com.hufs.algoing.problem.dto.SubmittedProblemDTO;
+import com.hufs.algoing.problem.repository.SubmittedProblemRepository;
 import com.hufs.algoing.solvedac.dto.SolvedAcProfileDTO;
 import com.hufs.algoing.solvedac.service.SolvedAcService;
 import com.hufs.algoing.user.dto.UserDTO;
@@ -11,6 +13,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -19,9 +23,11 @@ public class UserService {
     private SolvedAcService solvedAcService;
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+//    private final BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private SubmittedProblemRepository submittedProblemRepository;
 
     public void updateUserData(String handle) {
         // solved.ac API로부터 유저 정보 가져오기
@@ -63,5 +69,9 @@ public class UserService {
 
         // 생성된 ID를 반환
         return user.getUserId();
+    }
+
+    public List<SubmittedProblemDTO> getUserActivity(User user){
+        return submittedProblemRepository.findGroupedByDate(user);
     }
 }

@@ -32,9 +32,9 @@ public class ProblemCrawlService{
         return BASE_URL + problemId;
     }
 
-    public String getProblemUrlForSolvedAc(Long problemId) {
-        return "https://solved.ac/api/v3/problem/show" + problemId;
-    }
+//    public String getProblemUrlForSolvedAc(Long problemId) {
+//        return "https://solved.ac/api/v3/problem/show" + problemId;
+//    }
 
     public Problem crawlProblem(Long problemId) {
 

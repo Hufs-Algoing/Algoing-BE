@@ -5,20 +5,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "problem")
+@Table
 public class Problem {
     @Id
-    @Column(name = "problem_id", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private Long problemId;
 
     private String title;
 
-    @Column(name = "description", length = 256)
+    @Column(length = 256)
     @Lob
     private String description;
 
