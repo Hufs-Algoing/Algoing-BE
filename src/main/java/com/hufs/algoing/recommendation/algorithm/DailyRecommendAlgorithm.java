@@ -1,8 +1,8 @@
 package com.hufs.algoing.recommendation.algorithm;
 
+import com.hufs.algoing.problem.entity.SubmittedProblem;
 import com.hufs.algoing.recommendation.dto.DailyRecommendDTO;
 import com.hufs.algoing.problem.entity.Problem;
-import com.hufs.algoing.problem.entity.UserSolvedProblem;
 import com.hufs.algoing.user.entity.User;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class DailyRecommendAlgorithm {
     private static final int MAX_TIER_DIFF = 1; // 티어 차이 최대 +1까지
 
     // 유저 정보(user테이블) + 유저가 푼 문제(user solved problem테이블) + 문제(problem테이블) 리스트 받아서 추천리스트 만듦.
-    public static List<DailyRecommendDTO> recommend(User user, List<Problem> problems, List<UserSolvedProblem> solvedProblems) {
+    public static List<DailyRecommendDTO> recommend(User user, List<Problem> problems, List<SubmittedProblem> solvedProblems) {
 
         // 유저가 푼 문제 번호 -> USER_SOLVED_PROBLEM 테이블 Problem_num값 가져오기
         List<Long> solvedProblemIds = solvedProblems.stream()
@@ -67,7 +67,7 @@ public class DailyRecommendAlgorithm {
     }
 
     // 유저가 푼 문제 유형 리스트로 반환
-    private static List<String> calculateUserProblemTags(User user, List<UserSolvedProblem> solvedProblems, List<Problem> problems) {
+    private static List<String> calculateUserProblemTags(User user, List<SubmittedProblem> solvedProblems, List<Problem> problems) {
         return solvedProblems.stream()
                 .filter(solvedProblem -> solvedProblem.getUserId().equals(user))
                 .map(solvedProblem -> solvedProblem.getProblemId().getTag())
