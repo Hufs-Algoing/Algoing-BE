@@ -110,4 +110,9 @@ public class User implements UserDetails {
                 '}';
     }
 
+    public void updatePoint(int point) {
+        this.userPoint = point;
+    }
+
+
 }

@@ -1,4 +1,4 @@
-package com.hufs.algoing.global.exception;
+package com.hufs.algoing.global.exception.custom;
 
 import lombok.Getter;
 

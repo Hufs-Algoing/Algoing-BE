@@ -1,5 +1,6 @@
 package com.hufs.algoing.submitting.controller;
 
+import com.hufs.algoing.global.code.ApiResponse;
 import com.hufs.algoing.problem.entity.ProblemStatus;
 import com.hufs.algoing.submitting.service.SubmittingService;
 import com.hufs.algoing.user.entity.User;
@@ -10,15 +11,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/submit/")
+@RequestMapping("/api/submit/")
 public class SubmittingController {
 
     private final SubmittingService submittingService;
 
     @PostMapping("/{problemId}")
-    public ProblemStatus submit(@PathVariable Long problemId, @RequestBody String code, @RequestParam String language, @AuthenticationPrincipal User p) throws InterruptedException {
+    public ApiResponse<ProblemStatus> submit(@PathVariable Long problemId, @RequestBody String code, @RequestParam String language, @AuthenticationPrincipal User p) throws InterruptedException {
 //        String handle = p.getHandle();
-        return submittingService.submit(problemId, code, language, p);
+        return ApiResponse.onSuccess(submittingService.submit(problemId, code, language, p));
     }
 
 

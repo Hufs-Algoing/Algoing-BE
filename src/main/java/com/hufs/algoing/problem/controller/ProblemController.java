@@ -1,5 +1,6 @@
 package com.hufs.algoing.problem.controller;
 
+import com.hufs.algoing.global.code.ApiResponse;
 import com.hufs.algoing.problem.entity.Problem;
 import com.hufs.algoing.problem.service.ProblemCrawlService;
 import com.hufs.algoing.problem.service.ProblemService;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/problems/")
+@RequestMapping("/api/problems/")
 public class ProblemController {
 
     @Autowired
@@ -18,8 +19,8 @@ public class ProblemController {
 
 
     @GetMapping("/{problemId}")
-    public Problem getProblemId(@PathVariable Long problemId){
-        return problemService.getOrCrawlProblem(problemId);
+    public ApiResponse<Problem> getProblemId(@PathVariable Long problemId){
+        return ApiResponse.onSuccess(problemService.getOrCrawlProblem(problemId));
     }
 
 

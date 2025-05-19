@@ -38,12 +38,12 @@ public class ReviewService {
     private final SnapShotService snapShotService;
 
     // 해당 문제의 가장 최신 리뷰
-    public ReviewResponseDTO getRecentReview(Long userId, Long problemNum) {
-        Review review = reviewRepository.getRecentReview(userId, problemNum);
+    public ReviewResponseDTO getRecentReview(User user, Long problemNum) {
+        Review review = reviewRepository.getRecentReview(user.getUserId(), problemNum);
         return new ReviewResponseDTO(review.getSummary());
     }
 
-    public Mono<ReviewResponseDTO> handleReview(ReviewRequestDTO dto) {
+    public Mono<ReviewResponseDTO> handleReview(ReviewRequestDTO dto, User user) {
 
         log.info(dto.toString());
         Mono<JsonNode> readReviewMono = handleReadReview(dto)
@@ -69,8 +69,6 @@ public class ReviewService {
                             .flatMap(summary -> {
 
                                 String finalSummary = summary.get("review").asText();
-
-                                User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다. userId=" + dto.getUserId()));
 
                                 Review review = Review.builder()
                                         .code(dto.getCode())

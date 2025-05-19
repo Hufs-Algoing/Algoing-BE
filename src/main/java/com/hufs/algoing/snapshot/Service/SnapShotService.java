@@ -1,6 +1,7 @@
 package com.hufs.algoing.snapshot.Service;
 
-import com.hufs.algoing.global.exception.SnapShotNotFoundException;
+import com.hufs.algoing.global.code.ErrorStatus;
+import com.hufs.algoing.global.exception.custom.SnapShotNotFoundException;
 import com.hufs.algoing.review.entity.Review;
 import com.hufs.algoing.snapshot.dto.SnapShotDTO;
 import com.hufs.algoing.snapshot.entity.Snapshot;
@@ -23,7 +24,7 @@ public class SnapShotService {
 
         Snapshot snapshot = snapShotRepository
                 .getRecentSnapshot(userId)
-                .orElseThrow(() -> new SnapShotNotFoundException("해당 유저의 스냅샷이 없습니다. userId=" + userId));
+                .orElseThrow(() -> new SnapShotNotFoundException(ErrorStatus.SNAPSHOT_NOT_FOUND));
 
         return SnapShotDTO.fromEntity(snapshot);
     }

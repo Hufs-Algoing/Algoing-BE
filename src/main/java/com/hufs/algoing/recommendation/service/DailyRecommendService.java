@@ -1,5 +1,7 @@
 package com.hufs.algoing.recommendation.service;
 
+import com.hufs.algoing.global.code.ErrorStatus;
+import com.hufs.algoing.global.exception.custom.UserNotFoundException;
 import com.hufs.algoing.problem.entity.Problem;
 import com.hufs.algoing.problem.entity.SubmittedProblem;
 import com.hufs.algoing.problem.repository.ProblemRepository;
@@ -26,7 +28,7 @@ public class DailyRecommendService {
 
         // 유저 정보 가져오기
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("유저 정보를 찾을 수 없습니다: " + userId));
+                .orElseThrow(() -> new UserNotFoundException(ErrorStatus.USER_NOT_FOUND));
 
         // 유저가 푼 문제 가져오기
         List<SubmittedProblem> solvedProblems = submittedProblemRepository.findByUserId(user);

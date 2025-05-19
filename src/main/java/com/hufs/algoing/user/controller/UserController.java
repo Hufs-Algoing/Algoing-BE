@@ -1,5 +1,6 @@
 package com.hufs.algoing.user.controller;
 
+import com.hufs.algoing.global.code.ApiResponse;
 import com.hufs.algoing.solvedac.dto.SolvedAcProfileDTO;
 import com.hufs.algoing.solvedac.service.SolvedAcService;
 import com.hufs.algoing.user.service.UserService;
@@ -15,15 +16,15 @@ public class UserController {
     private SolvedAcService solvedAcService;
 
     @GetMapping("/{handle}")
-    public String getUser(@PathVariable String handle) {
+    public ApiResponse<String> getUser(@PathVariable String handle) {
         //임시
         SolvedAcProfileDTO profile = solvedAcService.getSolvedAcProfile(handle);
-        return profile.getBio() + " " + profile.getTier() + " " + profile.getSolvedCount() + " " + profile.getProfileImageUrl();
+        return ApiResponse.onSuccess(profile.getBio() + " " + profile.getTier() + " " + profile.getSolvedCount() + " " + profile.getProfileImageUrl());
     }
 
     @PutMapping("/{handle}")
-    public String updateUser(@PathVariable String handle) {
+    public ApiResponse<String> updateUser(@PathVariable String handle) {
         userService.updateUserData(handle);
-        return "User data updated successfully";
+        return ApiResponse.onSuccess("User data updated successfully");
     }
 }

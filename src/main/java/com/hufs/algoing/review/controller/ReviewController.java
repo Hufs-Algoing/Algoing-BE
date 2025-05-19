@@ -1,18 +1,21 @@
 package com.hufs.algoing.review.controller;
 
+import com.hufs.algoing.global.code.ApiResponse;
 import com.hufs.algoing.review.dto.ReviewRequestDTO;
 import com.hufs.algoing.review.dto.ReviewResponseDTO;
 import com.hufs.algoing.review.entity.Review;
 import com.hufs.algoing.review.service.ReviewService;
+import com.hufs.algoing.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @Tag(name = "Review API", description = "코드 리뷰 API")
-@RequestMapping("/reviews")
+@RequestMapping("/api/reviews")
 @RestController
 @RequiredArgsConstructor
 public class ReviewController {
@@ -20,9 +23,9 @@ public class ReviewController {
 
     @Operation(summary = "리뷰 요청 API", description = "해당 문제에 대한 AI 리뷰를 요청합니다.")
     @PostMapping
-    public Mono<ResponseEntity<ReviewResponseDTO>> requestReview(@RequestBody ReviewRequestDTO dto) {
-        return reviewService.handleReview(dto)
-                .map(reviewResponseDto -> ResponseEntity.ok(reviewResponseDto));
+    public Mono<ApiResponse<ReviewResponseDTO>> requestReview(@RequestBody ReviewRequestDTO dto, @AuthenticationPrincipal User user) {
+        return reviewService.handleReview(dto,user)
+                .map(reviewResponseDto -> ApiResponse.onSuccess(reviewResponseDto));
     }
 
 
