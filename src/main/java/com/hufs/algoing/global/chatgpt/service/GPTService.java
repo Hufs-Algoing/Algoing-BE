@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hufs.algoing.aisolved.entity.AISolved;
 import com.hufs.algoing.aisolved.repository.AISolvedRepository;
-import com.hufs.algoing.global.exception.BadWebClientRequestException;
+import com.hufs.algoing.global.exception.custom.BadWebClientRequestException;
+import com.hufs.algoing.hint.entity.Hint;
 import com.hufs.algoing.problem.entity.Problem;
 import com.hufs.algoing.problem.repository.ProblemRepository;
 import com.hufs.algoing.review.dto.ReviewRequestDTO;
@@ -15,7 +16,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.http.MediaType;
@@ -136,7 +135,21 @@ public class GPTService {
                                 .problem(problem)
                                 .build();
 
+                        for(int i=1;i<=3; i++){
+                            String key ="hint"+i;
+                            String value = parsed.get(key).asText();
+
+                            Hint hint = Hint.builder()
+                                    .content(value)
+                                    .order(i)
+                                    .build();
+
+                            aiSolved.addHint(hint);
+                            hint.updateAISolved(aiSolved);
+                        }
+
                         aiSolvedRepository.save(aiSolved);
+
                     } catch (Exception e) {
                         log.error("Exception [Err_Location] : {}", e.getStackTrace()[0]);
                     }
@@ -203,7 +216,7 @@ public class GPTService {
     // 리뷰 - 가독성 요청
     public Mono<JsonNode> requestReadbility(ReviewRequestDTO dto){
 
-        log.info("가독성 리뷰 - 유저: {}, Thread: {}", dto.getUserId(), Thread.currentThread().getName());
+        log.info("가독성 리뷰 - Thread: {}", Thread.currentThread().getName());
 
         ObjectNode requestBody = objectMapper.createObjectNode();
         requestBody.put("model", "gpt-4o-mini");
@@ -264,7 +277,7 @@ public class GPTService {
     // 리뷰 - 최적성 요청
     public Mono<JsonNode> requestOptimization(ReviewRequestDTO dto){
 
-        log.info("최적성 리뷰 - 유저: {}, Thread: {}", dto.getUserId(), Thread.currentThread().getName());
+        log.info("최적성 리뷰 - Thread: {}", Thread.currentThread().getName());
 
         ObjectNode requestBody = objectMapper.createObjectNode();
         requestBody.put("model", "gpt-4o-mini");
@@ -325,7 +338,7 @@ public class GPTService {
     // 리뷰 - 중복성 요청
     public Mono<JsonNode> requestDuplicate(ReviewRequestDTO dto){
 
-        log.info("최적성 리뷰 - 유저: {}, Thread: {}", dto.getUserId(), Thread.currentThread().getName());
+        log.info("최적성 리뷰 - Thread: {}", Thread.currentThread().getName());
 
         ObjectNode requestBody = objectMapper.createObjectNode();
         requestBody.put("model", "gpt-4o-mini");
