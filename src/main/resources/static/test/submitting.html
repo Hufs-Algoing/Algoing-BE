@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+</head>
+<body>
+<form id="submitForm" action="/submit" method="POST">
+	<input type="hidden" name="problemId" id="problemId" value="">
+	<label for="language">언어</label>
+	<select name="language" id="language">
+		<option value="Python 3">Python 3</option>
+		<option value="Java 11">Java 11</option>
+		<option value="C++17">C++17</option>
+	</select>
+	<br><br>
+	<label for="code">코드</label>
+	<textarea name="code" id="code" cols="30" rows="10"></textarea>
+	<br><br>
+	<button type="submit">제출</button>
+</form>
+<script>
+	// 현재 URL에서 problemId 쿼리 파라미터 추출
+	const urlParams = new URLSearchParams(window.location.search);
+	const problemId = urlParams.get('problemId');
+	if (problemId) {
+		// form action에 problemId 쿼리스트링 추가
+		document.getElementById('problemId').value += encodeURIComponent(problemId);
+	}
+</script>
+</body>
+</html>

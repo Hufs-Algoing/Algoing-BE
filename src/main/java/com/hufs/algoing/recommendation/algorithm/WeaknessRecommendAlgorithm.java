@@ -1,7 +1,7 @@
 package com.hufs.algoing.recommendation.algorithm;
 
 import com.hufs.algoing.problem.entity.Problem;
-import com.hufs.algoing.problem.entity.UserSolvedProblem;
+import com.hufs.algoing.problem.entity.SubmittedProblem;
 import com.hufs.algoing.recommendation.dto.WeaknessRecommendDTO;
 import com.hufs.algoing.review.entity.Review;
 import com.hufs.algoing.user.entity.User;
@@ -23,7 +23,7 @@ public class WeaknessRecommendAlgorithm {
 
     private static final int MAX_WEAKNESS=15; //점수 차이 15점 이내 문제 추천
 
-    public static List<WeaknessRecommendDTO> recommend(User user, List<Review> userReviewProblem, List<AISolved> aisolvedProblem, List<UserSolvedProblem> userSolvedProblems, List<Problem> problems) {
+    public static List<WeaknessRecommendDTO> recommend(User user, List<Review> userReviewProblem, List<AISolved> aisolvedProblem, List<SubmittedProblem> submittedProblems, List<Problem> problems) {
 
         //유저 id와 일치하는 review 가져오기
         List<Review> userReview = userReviewProblem.stream()
@@ -82,7 +82,7 @@ public class WeaknessRecommendAlgorithm {
 
         //유형 선호도 가중치 계산
         //유저가 푼 유형 갯수(ex: greedy,20)
-        Map<String,Long> typeCount= userSolvedProblems.stream()
+        Map<String,Long> typeCount= submittedProblems.stream()
                 .filter(usp->usp.getUserId().getUserId().equals(user.getUserId()))
                 .map(solvedProblem -> solvedProblem.getProblemId().getTag())
                 .filter(tagStr -> tagStr != null && !tagStr.isEmpty())
@@ -136,7 +136,7 @@ public class WeaknessRecommendAlgorithm {
                 .collect(Collectors.toList());
 
         // 유저가 푼 문제들의 ID만 추출
-        Set<Long> solvedProblemIds = userSolvedProblems.stream()
+        Set<Long> solvedProblemIds = submittedProblems.stream()
                 .filter(sp -> sp.getUserId().getUserId().equals(user.getUserId()))
                 .map(sp -> sp.getProblemId().getProblemId())
                 .collect(Collectors.toSet());

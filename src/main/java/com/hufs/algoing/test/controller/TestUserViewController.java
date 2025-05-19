@@ -2,6 +2,7 @@ package com.hufs.algoing.test.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class TestUserViewController {
@@ -26,5 +27,13 @@ public class TestUserViewController {
     public String testLoginError() {
         return "redirect:/test/loginerror.html";
     }
+
+
+    @GetMapping("/submit/{problemId}")
+    public String testSubmit(@PathVariable Long problemId) {
+        return "redirect:/test/submitting.html?problemId=" + problemId;
+    }
+
+
 
 }
