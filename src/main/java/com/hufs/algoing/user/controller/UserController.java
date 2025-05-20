@@ -1,10 +1,9 @@
 package com.hufs.algoing.user.controller;
 
-import com.hufs.algoing.problem.entity.UserSolvedProblem;
 import com.hufs.algoing.global.code.ApiResponse;
 import com.hufs.algoing.solvedac.dto.SolvedAcProfileDTO;
 import com.hufs.algoing.solvedac.service.SolvedAcService;
-import com.hufs.algoing.problem.dto.UserSolvedProblemDTO;
+import com.hufs.algoing.problem.dto.SubmittedProblemDTO;
 import com.hufs.algoing.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +31,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/solved")
-    public List<UserSolvedProblemDTO> getUserSolvedProblems(@PathVariable Long userId) {
-        List<UserSolvedProblemDTO> solvedProblems = userService.searchUserSolve(userId);
-        return solvedProblems;
+    public ApiResponse<List<SubmittedProblemDTO>> getUserSolvedProblems(@PathVariable Long userId) {
+        List<SubmittedProblemDTO> solvedProblems = userService.searchUserSolve(userId);
+        return ApiResponse.onSuccess(solvedProblems);
     }
 }

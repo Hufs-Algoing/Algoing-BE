@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserSolvedProblemDTO {
+public class SubmittedProblemDTO {
 
     private Long userSolvedId;
     private Long userId;
@@ -22,4 +22,5 @@ public class UserSolvedProblemDTO {
     private String tag;
     private Long level;
     private LocalDateTime solvedAt;
+
 }

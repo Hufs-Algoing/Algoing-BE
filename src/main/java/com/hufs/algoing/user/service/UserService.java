@@ -1,6 +1,8 @@
 package com.hufs.algoing.user.service;
 
-import com.hufs.algoing.problem.dto.UserSolvedProblemDTO;
+import com.hufs.algoing.global.code.ErrorStatus;
+import com.hufs.algoing.global.exception.custom.UserNotFoundException;
+import com.hufs.algoing.problem.dto.SubmittedProblemDTO;
 import com.hufs.algoing.problem.dto.ZandiDTO;
 import com.hufs.algoing.problem.entity.ProblemStatus;
 import com.hufs.algoing.problem.repository.SubmittedProblemRepository;
@@ -79,17 +81,17 @@ public class UserService {
 
 
     //mypage: 유저가 푼 문제 조회
-    public List<UserSolvedProblemDTO> searchUserSolve(long userId){
+    public List<SubmittedProblemDTO> searchUserSolve(long userId){
 
         //유저 정보 확인
         User user=userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(ErrorStatus.USER_NOT_FOUND));
 
         // 유저가 푼 문제 가져오기
         return submittedProblemRepository.findByUserId(user)
                 .stream()
-                .map(entity -> new UserSolvedProblemDTO(
-                        entity.getUserId().getUserId(),
+                .map(entity -> new SubmittedProblemDTO(
+                        entity.getSubmittedProblemId(),
                         entity.getUserId().getUserId(),
                         entity.getProblemId().getProblemId(),
                         entity.getProblemId().getTitle(),
