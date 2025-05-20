@@ -98,7 +98,9 @@ public class UserService {
                         entity.getAnswer(),
                         entity.getProblemId().getTag(),
                         entity.getProblemId().getLevel(),
-                        entity.getSubmittedAt()
+                        entity.getLanguage(),
+                        entity.getSubmittedAt(),
+                        entity.getSubmittedDate()
                 ))
                 .toList();
     }
@@ -106,4 +108,6 @@ public class UserService {
     public List<ZandiDTO> getUserActivity(User user){
         return submittedProblemRepository.findGroupedByDate(user, ProblemStatus.SOLVED);
     }
+
+    //
 }

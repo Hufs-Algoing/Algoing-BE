@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,13 +15,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class SubmittedProblemDTO {
 
-    private Long userSolvedId;
+    private Long submittedProblemId;
     private Long userId;
     private Long problemId;
     private String title;
     private String answer;
     private String tag;
     private Long level;
-    private LocalDateTime solvedAt;
+    private String language;
+    private LocalDateTime submittedAt;
+    private LocalDate submittedDate;
 
 }
