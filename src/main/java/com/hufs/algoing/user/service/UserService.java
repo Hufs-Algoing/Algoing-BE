@@ -6,14 +6,18 @@ import com.hufs.algoing.problem.dto.SubmittedProblemDTO;
 import com.hufs.algoing.problem.dto.ZandiDTO;
 import com.hufs.algoing.problem.entity.ProblemStatus;
 import com.hufs.algoing.problem.repository.SubmittedProblemRepository;
+import com.hufs.algoing.review.dto.ReviewResponseDTO;
+import com.hufs.algoing.review.dto.SearchReviewResponseDTO;
+import com.hufs.algoing.review.entity.Review;
+import com.hufs.algoing.review.repository.ReviewCustomRepository;
 import com.hufs.algoing.solvedac.dto.SolvedAcProfileDTO;
 import com.hufs.algoing.solvedac.service.SolvedAcService;
 import com.hufs.algoing.user.dto.UserDTO;
 import com.hufs.algoing.user.entity.User;
 import com.hufs.algoing.user.repository.UserRepository;
-import com.hufs.algoing.problem.repository.SubmittedProblemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,6 +39,10 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private SubmittedProblemRepository submittedProblemRepository;
+
+    @Qualifier("reviewCustomRepositoryImpl")
+    @Autowired
+    private ReviewCustomRepository reviewCustomRepository;
 
 
     public void updateUserData(String handle) {
@@ -79,16 +87,19 @@ public class UserService {
         return user.getUserId();
     }
 
+    public List<ZandiDTO> getUserActivity(User user){
+        return submittedProblemRepository.findGroupedByDate(user, ProblemStatus.SOLVED);
+    }
 
-    //mypage: 유저가 푼 문제 조회
+    //MYPAGE: 유저가 푼 문제 조회
     public List<SubmittedProblemDTO> searchUserSolve(long userId){
 
         //유저 정보 확인
-        User user=userRepository.findById(userId)
+        User solvedUser=userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(ErrorStatus.USER_NOT_FOUND));
 
         // 유저가 푼 문제 가져오기
-        return submittedProblemRepository.findByUserId(user)
+        return submittedProblemRepository.findByUserId(solvedUser)
                 .stream()
                 .map(entity -> new SubmittedProblemDTO(
                         entity.getSubmittedProblemId(),
@@ -105,9 +116,27 @@ public class UserService {
                 .toList();
     }
 
-    public List<ZandiDTO> getUserActivity(User user){
-        return submittedProblemRepository.findGroupedByDate(user, ProblemStatus.SOLVED);
-    }
+    //MYPAGE:저장된 AI 리뷰 받은 문제 조회
+    public List<SearchReviewResponseDTO> searchUserReviewed(long userId){
 
-    //
+        //유저 정보 확인
+       userRepository.findById(userId)
+               .orElseThrow(() -> new UserNotFoundException(ErrorStatus.USER_NOT_FOUND));
+
+        // 해당 유저의 모든 리뷰 가져오기
+        List<Review> reviews = reviewCustomRepository.getUserReviews(userId);
+
+        // Review 엔티티를 SearchReviewResponseDTO로 변환
+        return reviews.stream()
+                .map(review -> new SearchReviewResponseDTO(
+                        review.getId(),
+                        review.getUser().getUserId(),
+                        review.getProblemNum(),
+                        review.getSummary(),
+                        review.getCreatedAt(),
+                        review.getCode(),
+                        review.getLanguage()
+                ))
+                .toList();
+    }
 }

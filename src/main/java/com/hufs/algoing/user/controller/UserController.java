@@ -1,6 +1,8 @@
 package com.hufs.algoing.user.controller;
 
 import com.hufs.algoing.global.code.ApiResponse;
+import com.hufs.algoing.review.dto.ReviewResponseDTO;
+import com.hufs.algoing.review.dto.SearchReviewResponseDTO;
 import com.hufs.algoing.solvedac.dto.SolvedAcProfileDTO;
 import com.hufs.algoing.solvedac.service.SolvedAcService;
 import com.hufs.algoing.problem.dto.SubmittedProblemDTO;
@@ -34,5 +36,12 @@ public class UserController {
     public ApiResponse<List<SubmittedProblemDTO>> getUserSolvedProblems(@PathVariable Long userId) {
         List<SubmittedProblemDTO> solvedProblems = userService.searchUserSolve(userId);
         return ApiResponse.onSuccess(solvedProblems);
+    }
+
+    @GetMapping("/{userId}/reviewed")
+    public ApiResponse<List<SearchReviewResponseDTO>> getUserReviewedProblems(@PathVariable Long userId) {
+        List<SearchReviewResponseDTO> reviewedProblems = userService.searchUserReviewed(userId);
+        return ApiResponse.onSuccess(reviewedProblems);
+
     }
 }
