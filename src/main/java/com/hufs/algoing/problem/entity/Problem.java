@@ -73,24 +73,4 @@ public class Problem {
         this.limit = limit;
     }
 
-    @Override
-    public String toString() {
-        return "Problem{" +
-                "problemId=" + problemId +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", input='" + input + '\'' +
-                ", output='" + output + '\'' +
-                ", sampleInput1='" + sampleInput1 + '\'' +
-                ", sampleInput2='" + sampleInput2 + '\'' +
-                ", sampleOutput1='" + sampleOutput1 + '\'' +
-                ", sampleOutput2='" + sampleOutput2 + '\'' +
-                ", tag='" + tag + '\'' +
-                ", tagNames='" + tagNames + '\'' +
-                ", time='" + time + '\'' +
-                ", memory='" + memory + '\'' +
-                ", level=" + level +
-                ", limit='" + limit + '\'' +
-                '}';
-    }
 }

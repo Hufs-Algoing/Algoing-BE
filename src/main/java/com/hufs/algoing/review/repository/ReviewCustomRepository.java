@@ -1,5 +1,6 @@
 package com.hufs.algoing.review.repository;
 
+import com.hufs.algoing.review.dto.ReviewResponseDTO;
 import com.hufs.algoing.review.entity.Review;
 import com.hufs.algoing.user.entity.User;
 

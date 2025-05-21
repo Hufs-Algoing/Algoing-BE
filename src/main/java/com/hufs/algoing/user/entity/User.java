@@ -103,12 +103,6 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority("user"));
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                '}';
-    }
 
     public void updatePoint(int point) {
         this.userPoint = point;

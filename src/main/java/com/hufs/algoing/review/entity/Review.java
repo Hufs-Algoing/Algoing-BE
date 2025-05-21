@@ -76,24 +76,6 @@ public class Review {
     @Column(name="language")
     private String language;
 
-    @Override
-    public String toString() {
-        return "Review{" +
-                "id=" + id +
-                ", readbility=" + readbility +
-                ", optimization=" + optimization +
-                ", duplicate=" + duplicate +
-                ", readReview='" + readReview + '\'' +
-                ", optReview='" + optReview + '\'' +
-                ", dupReview='" + dupReview + '\'' +
-                ", summary='" + summary + '\'' +
-                ", problemNum=" + problemNum +
-                ", createdAt=" + createdAt +
-                ", user=" + (user != null ? user.getUserId() : "null") +
-                ", code='" + code + '\'' +
-                ", language='" + language + '\'' +
-                '}';
-    }
 
 
 

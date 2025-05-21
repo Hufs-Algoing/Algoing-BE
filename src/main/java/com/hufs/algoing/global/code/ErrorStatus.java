@@ -11,7 +11,8 @@ public enum ErrorStatus implements BaseErrorCode{
     _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "서버 에러, 관리자에게 문의 바랍니다."),
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER4001", "사용자가 없습니다."),
     HINT_NOT_FOUND(HttpStatus.BAD_REQUEST,"HINT4001","힌트가 없습니다."),
-    SNAPSHOT_NOT_FOUND(HttpStatus.BAD_REQUEST,"SNAPSHOT4001","해당 유저의 스냅샷이 없습니다.");
+    SNAPSHOT_NOT_FOUND(HttpStatus.BAD_REQUEST,"SNAPSHOT4001","해당 유저의 스냅샷이 없습니다."),
+    PROBLEM_NOT_FOUND(HttpStatus.BAD_REQUEST, "PROBLEM4001","해당하는 문제가 없습니다." );
 
     private final HttpStatus httpStatus;
     private final String code;

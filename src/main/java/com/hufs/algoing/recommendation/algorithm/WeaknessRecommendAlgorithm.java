@@ -143,7 +143,7 @@ public class WeaknessRecommendAlgorithm {
 
         // 추천 리스트에서 이미 푼 문제 제거
         List<WeaknessRecommendDTO> filteredRecommendProblems = recommendProblems.stream()
-                .filter(dto -> !solvedProblemIds.contains(dto.getProblemId().getProblemId()))
+                .filter(dto -> !solvedProblemIds.contains(dto.getProblem().getProblemId()))
                 .collect(Collectors.toList());
 
         filteredRecommendProblems.forEach(problem -> {

@@ -54,20 +54,7 @@ public class AISolved {
     @OneToMany(mappedBy = "aiSolved", cascade = CascadeType.ALL)
     private List<Hint> hints = new ArrayList<>();
 
-    @Override
-    public String toString() {
-        return "AISolved{" +
-                "id=" + id +
-                ", readLevel=" + readLevel +
-                ", optLevel=" + optLevel +
-                ", dupLevel=" + dupLevel +
-                ", readTip='" + readTip + '\'' +
-                ", optTip='" + optTip + '\'' +
-                ", dupTip='" + dupTip + '\'' +
-                ", pattern='" + pattern + '\'' +
-                ", problem=" + (problem != null ? problem.getProblemId() : null) +  // 문제 ID만 출력 (문제 객체가 null일 수 있기 때문)
-                '}';
-    }
+
 
     public void addHint(Hint hint) {
         if (this.hints == null) {
