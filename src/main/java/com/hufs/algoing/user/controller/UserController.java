@@ -1,11 +1,12 @@
 package com.hufs.algoing.user.controller;
 
 import com.hufs.algoing.global.code.ApiResponse;
-import com.hufs.algoing.review.dto.ReviewResponseDTO;
 import com.hufs.algoing.review.dto.SearchReviewResponseDTO;
 import com.hufs.algoing.solvedac.dto.SolvedAcProfileDTO;
 import com.hufs.algoing.solvedac.service.SolvedAcService;
 import com.hufs.algoing.problem.dto.SubmittedProblemDTO;
+import com.hufs.algoing.user.dto.BookMarkDTO;
+import com.hufs.algoing.user.entity.User;
 import com.hufs.algoing.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -44,4 +45,22 @@ public class UserController {
         return ApiResponse.onSuccess(reviewedProblems);
 
     }
+
+    @PatchMapping("/toggle")
+    public ApiResponse<Boolean> toggleBookmark(
+            @RequestParam Long userId,
+            @RequestParam Long problemId
+    ) {
+        boolean status = userService.updateBookMark(userId, problemId, true);
+        return ApiResponse.onSuccess(status);
+    }
+
+    @GetMapping("/{userId}/bookmarks")
+    public ApiResponse<List<BookMarkDTO>> getUserBookmarks(@PathVariable User userId) {
+        List<BookMarkDTO> bookmarkedProblems = userService.getUserBookmarks(userId.getUserId());
+        return ApiResponse.onSuccess(bookmarkedProblems);
+    }
+
+
 }
+
