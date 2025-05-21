@@ -191,7 +191,7 @@ public class UserService {
                 .map(bookmark -> new BookMarkDTO(
                         bookmark.getBookMarkId(),
                         bookmark.getUserId().getUserId(),
-                        bookmark.getProblemId().getProblemId(),  // 문제 ID가 필요하다면
+                        bookmark.getProblemId().getProblemId(),
                         bookmark.getProblemId().getTitle()
                 ))
                 .toList();

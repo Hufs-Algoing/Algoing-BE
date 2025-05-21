@@ -38,7 +38,7 @@ public class UserController {
 
     @Tag(name = "Mypage", description = "")
     @Operation(summary = "Mypage", description = "요청 받은 사용자가 제출한 문제를 조회합니다.")
-    @Parameter(name = "long", description = "사용자 id")
+    @Parameter(name = "userId", description = "사용자 id")
     @GetMapping("/{userId}/solved")
     public ApiResponse<List<SubmittedProblemDTO>> getUserSolvedProblems(@PathVariable Long userId) {
         List<SubmittedProblemDTO> solvedProblems = userService.searchUserSolve(userId);
@@ -47,7 +47,7 @@ public class UserController {
 
     @Tag(name = "Mypage", description = "")
     @Operation(summary = "Mypage", description = "요청 받은 사용자가 리뷰받은 문제를 조회합니다.")
-    @Parameter(name = "long", description = "사용자 id")
+    @Parameter(name = "userId", description = "사용자 id")
     @GetMapping("/{userId}/reviewed")
     public ApiResponse<List<SearchReviewResponseDTO>> getUserReviewedProblems(@PathVariable Long userId) {
         List<SearchReviewResponseDTO> reviewedProblems = userService.searchUserReviewed(userId);
@@ -57,7 +57,7 @@ public class UserController {
 
     @Tag(name = "BookMark", description = "즐겨찾기 등록/삭제 API")
     @Operation(summary = "BookMark", description = "등록 true/ 삭제 false")
-    @Parameter(name = "long", description = "user id/problem id")
+    @Parameter(name = "user id / problem id", description = "user id/problem id")
     @PatchMapping("/toggle")
     public ApiResponse<Boolean> toggleBookmark(
             @RequestParam Long userId,
@@ -69,7 +69,7 @@ public class UserController {
 
     @Tag(name = "Mypage", description = "")
     @Operation(summary = "Mypage", description = "요청 받은 사용자가 북마크한 문제를 조회합니다.")
-    @Parameter(name = "long", description = "사용자 id")
+    @Parameter(name = "userId", description = "사용자 id")
     @GetMapping("/{userId}/bookmarks")
     public ApiResponse<List<BookMarkDTO>> getUserBookmarks(@PathVariable Long userId) {
         List<BookMarkDTO> bookmarkedProblems = userService.getUserBookmarks(userId);
