@@ -1,28 +1,31 @@
 package com.hufs.algoing.user.controller;
 
 import com.hufs.algoing.global.code.ApiResponse;
+import com.hufs.algoing.problem.dto.SubmittedProblemDTO;
 import com.hufs.algoing.review.dto.SearchReviewResponseDTO;
 import com.hufs.algoing.solvedac.dto.SolvedAcProfileDTO;
 import com.hufs.algoing.solvedac.service.SolvedAcService;
-import com.hufs.algoing.problem.dto.SubmittedProblemDTO;
 import com.hufs.algoing.user.dto.BookMarkDTO;
-import com.hufs.algoing.user.entity.User;
 import com.hufs.algoing.user.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@Tag(name = "User API", description = "유저 API")
 @RestController
 @RequestMapping(value = "/api/user")
+@RequiredArgsConstructor
 public class UserController {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private SolvedAcService solvedAcService;
+    //    @Autowired
+    private final UserService userService;
+    //    @Autowired
+    private final SolvedAcService solvedAcService;
 
+    @Operation(summary = "유저 정보 조회", description = "해당 유저 ID를 기반으로 유저 정보를 조회합니다.")
     @GetMapping("/{handle}")
     public ApiResponse<String> getUser(@PathVariable String handle) {
         //임시
@@ -30,6 +33,7 @@ public class UserController {
         return ApiResponse.onSuccess(profile.getBio() + " " + profile.getTier() + " " + profile.getSolvedCount() + " " + profile.getProfileImageUrl());
     }
 
+    @Operation(summary = "유저 정보 업데이트", description = "해당 유저 ID를 기반으로 유저 정보를 업데이트합니다.")
     @PutMapping("/{handle}")
     public ApiResponse<String> updateUser(@PathVariable String handle) {
         userService.updateUserData(handle);
