@@ -41,34 +41,17 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-
-            echo "1. 기존 프로세스 확인"
-            JAVA_PIDS=$(pgrep -f 'java.*algoing.*jar' || true)
-            if [ -n "$JAVA_PIDS" ]; then
-              echo "기존 프로세스 발견 (PID: $JAVA_PIDS), 종료 중..."
-              for pid in $JAVA_PIDS; do
-                kill $pid || echo "PID $pid 는 이미 종료됨"
-              done
-
-              # 종료 대기 (최대 10초)
-              for i in {1..10}; do
-                sleep 1
-                ALIVE_PIDS=$(pgrep -f 'java.*algoing.*jar' || true)
-                if [ -z "$ALIVE_PIDS" ]; then
-                  echo "기존 프로세스 모두 종료됨"
-                  break
-                else
-                  echo "아직 종료되지 않은 PID: $ALIVE_PIDS"
-                fi
-              done
-
-              if [ -n "$ALIVE_PIDS" ]; then
-                echo "기존 프로세스가 종료되지 않아 배포 실패"
-                exit 1
-              fi
-            else
-              echo "종료할 프로세스 없음"
-            fi
+            
+            echo "> 기존 프로세스 확인"
+             CURRENT_PID=$(pgrep -f 'java.*algoing.*jar' || true)
+            
+             if [ -z "$CURRENT_PID" ]; then
+               echo "> 현재 실행중인 애플리케이션이 없으므로 종료하지 않습니다."
+             else
+               echo "> kill -9 $CURRENT_PID"
+               kill -9 $CURRENT_PID
+               sleep 5
+             fi
 
             echo "2. .env 있는 디렉토리 이동 및 환경변수 로드"
             cd /home/ec2-user/app || { echo "app 디렉토리 없음"; exit 1; }
