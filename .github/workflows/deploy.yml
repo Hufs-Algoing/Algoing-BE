@@ -1,4 +1,4 @@
-name: Deploy to EC2
+name: Deploy to EC2 on release branch push
 
 on:
   push:
@@ -6,50 +6,32 @@ on:
       - 'release*'
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v3
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Grant execute permission to gradlew
-        run: chmod +x gradlew
-
-      - name: Build with Gradle
-        run: ./gradlew clean build -x test
-
-      - name: Check JAR file
-        run: ls -al build/libs
-
-      - name: Copy build file to EC2
-        uses: appleboy/scp-action@v0.1.7
+      - name: SSH into EC2 and deploy
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "build/libs/*.jar"
-          target: "/home/ec2-user/app/"
-
-      - name: Deploy on EC2
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
+          script_stop: true
           script: |
-            pkill -f 'java -jar' || true
+            echo "[1] 디렉토리 이동"
             cd /home/ec2-user/app
 
-            echo "환경 변수 확인"
-            cat .env
+            echo "[2] 최신 코드 pull"
+            git pull origin $(echo $GITHUB_REF | sed 's#refs/heads/##')
 
-            cd /home/ec2-user/app/build/libs
+            echo "[3] build 시작"
+            ./gradlew clean build -x test
 
-            env $(cat /home/ec2-user/app/.env | xargs) nohup java -jar algoing-0.0.1-SNAPSHOT.jar > /home/ec2-user/app/app.log 2>&1 &
+            echo "[4] 기존 프로세스 종료"
+            pkill -f 'java -jar' || true
+
+            echo "[5] .env 환경 변수 export"
+            export $(cat .env | xargs)
+
+            echo "[6] 애플리케이션 실행"
+            nohup java -jar build/libs/*SNAPSHOT.jar > app.log 2>&1 & disown
