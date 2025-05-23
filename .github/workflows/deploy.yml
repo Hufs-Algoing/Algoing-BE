@@ -28,25 +28,27 @@ jobs:
       - name: Check JAR file
         run: ls -al build/libs
 
-      - name: Clean old JAR files on EC2
+      - name: Clean old jars on EC2
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            rm -f /home/ec2-user/app/build/libs/*.jar
+            rm -f /home/ec2-user/app/*.jar
+            rm -rf /home/ec2-user/app/build
+            rm -rf /home/ec2-user/app/build/libs
 
-      - name: Copy build file to EC2
+      - name: Copy build jar to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "build/libs/*.jar"
-          target: "/home/ec2-user/app/build/libs/"
+          target: "/home/ec2-user/app/"
 
-      - name: Deploy on EC2
+      - name: Deploy and run on EC2
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -55,9 +57,5 @@ jobs:
           script: |
             pkill -f 'java -jar' || true
             cd /home/ec2-user/app
-
             export $(cat .env | xargs)
-
-            cd /home/ec2-user/app/build/libs
-            
             nohup java -jar *.jar > app.log 2>&1 &
