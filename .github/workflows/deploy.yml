@@ -42,12 +42,13 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             echo "1. 기존 프로세스 확인"
-            ps aux | grep '[a]lgoing' || echo "실행중인 algoing 프로세스 없음"
+            ps aux | grep '[j]ava.*algoing.*jar' || echo "실행중인 algoing 프로세스 없음"
             
             echo "2. 기존 프로세스 종료 시도"
-            if pgrep -f 'algoing' > /dev/null; then
-              echo "기존 프로세스 발견, 종료 중..."
-              pkill -f 'algoing'
+            JAVA_PID=$(pgrep -f 'java.*algoing.*jar' || echo "")
+            if [ ! -z "$JAVA_PID" ]; then
+              echo "기존 프로세스 발견 (PID: $JAVA_PID), 종료 중..."
+              kill $JAVA_PID
               sleep 3
             else
               echo "종료할 프로세스 없음"
