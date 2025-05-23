@@ -45,6 +45,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             pkill -f 'java -jar' || true
+            sleep 3
             cd /home/ec2-user/app
             export $(cat .env | xargs)
             cd /home/ec2-user/app/build/libs
