@@ -49,4 +49,6 @@ jobs:
             cd /home/ec2-user/app
             export $(cat .env | xargs)
             cd /home/ec2-user/app/build/libs
-            setsid java -jar algoing-0.0.1-SNAPSHOT.jar > /home/ec2-user/app/app.log 2>&1 < /dev/null &
+            nohup java -jar algoing-0.0.1-SNAPSHOT.jar \
+            1>/home/ec2-user/app/nohup_stdout.log \
+            2>/home/ec2-user/app/nohup_stderr.log < /dev/null &
