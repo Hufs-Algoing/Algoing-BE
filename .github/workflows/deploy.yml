@@ -42,46 +42,41 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             echo "1. 기존 프로세스 확인"
-            # 현재 쉘 PID를 변수에 저장
-            CURRENT_PID=$$
-
-            # java algoing jar 프로세스 중 현재 쉘 PID 제외
-            JAVA_PID=$(pgrep -f 'java.*algoing.*jar' | grep -v "^$CURRENT_PID$" || echo "")
-
-            if [ ! -z "$JAVA_PID" ]; then
-              echo "2. 기존 프로세스 발견 (PID: $JAVA_PID), 종료 중..."
-              kill $JAVA_PID
+            JAVA_PID=$(pgrep -f 'java.*algoing.*jar' || true)
+            if [ -n "$JAVA_PID" ]; then
+              echo "기존 프로세스 발견 (PID: $JAVA_PID), 종료 중..."
+              kill $JAVA_PID || echo "프로세스가 이미 종료됨"
               sleep 3
             else
-              echo "2. 종료할 프로세스 없음"
+              echo "종료할 프로세스 없음"
             fi
 
-            echo "3. 디렉토리 이동"
-            cd /home/ec2-user/app
+            echo "2. .env 있는 디렉토리 이동 및 환경변수 로드"
+            cd /home/ec2-user/app || { echo "app 디렉토리 없음"; exit 1; }
             pwd
-
-            echo "4. JAR 파일 확인"
-            ls -la *.jar
-
-            echo "5. 환경변수 로드"
             if [ -f .env ]; then
               set -o allexport
               source .env
               set +o allexport
               echo "환경변수 로드됨"
+            else
+              echo ".env 파일 없음"
             fi
 
-            echo "6. 애플리케이션 시작"
-            nohup java -jar algoing-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+            echo "3. JAR 파일 존재 확인"
+            ls -la build/libs/algoing-0.0.1-SNAPSHOT.jar || { echo "JAR 파일 없음"; exit 1; }
+
+            echo "4. 애플리케이션 시작"
+            nohup java -jar build/libs/algoing-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
             APP_PID=$!
             echo "시작된 PID: $APP_PID"
 
-            echo "7. 시작 대기 및 확인"
+            echo "5. 시작 대기 및 확인"
             sleep 5
             if kill -0 $APP_PID 2>/dev/null; then
-              echo " 배포 성공 (PID: $APP_PID)"
+              echo "배포 성공 (PID: $APP_PID)"
             else
-              echo " 배포 실패"
+              echo "배포 실패"
               echo "=== 로그 내용 ==="
               cat app.log
               exit 1
