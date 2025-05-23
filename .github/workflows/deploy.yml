@@ -47,7 +47,6 @@ jobs:
             pkill -f 'java -jar' || true
             cd /home/ec2-user/app
 
-            source .env
             export $(cat .env | xargs)
 
             cd /home/ec2-user/app/build/libs
