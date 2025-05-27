@@ -65,7 +65,7 @@ public class SubmitService {
                 .timeout(Duration.ofSeconds(180))
                 .doOnError(e -> log.error("파이썬 서버 요청 중 오류 발생", e))
                 .onErrorReturn(new RecaptchaResponseDTO() {{
-                    setMessage("TimeOut 또는 Error 발생");
+                    setMessage("TimeOut 또는 Error 발생 ");
                     setCorrect(false);
                 }})
                 .block();
