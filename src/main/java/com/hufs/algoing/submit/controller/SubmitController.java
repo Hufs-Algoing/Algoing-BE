@@ -26,27 +26,16 @@ import java.io.IOException;
 @Slf4j
 public class SubmitController {
     private final SubmitService submitService;
-    private final WebClient.Builder webClientBuilder;
+
 
     // 캡차 해결 + 자동 제출
 
     @PostMapping
     public ApiResponse<RecaptchaResponseDTO> solveCaptcha(@RequestBody SubmitRequestDTO dto) {
-        RecaptchaRequestDTO recapDTO = submitService.submit(dto, dto.getUserId());
-
-        RecaptchaResponseDTO result = webClientBuilder.build()
-                .post()
-                .uri("http://43.200.206.181:5000/start")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(recapDTO)
-                .retrieve()
-                .bodyToMono(RecaptchaResponseDTO.class)
-                .block();
-
-        submitService.judgePoint(result, dto.getUserId());
-
+        RecaptchaResponseDTO result = submitService.solveAndJudge(dto);
         return ApiResponse.onSuccess(result);
     }
+
 
 
 }
