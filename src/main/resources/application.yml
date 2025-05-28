@@ -39,4 +39,7 @@ springdoc:
   swagger-ui:
     operations-sorter: method
     tags-sorter: alpha
-    path: "swagger.html" # http://localhost:8080/swagger.html로 접속 가능
+    path: "swagger.html"
+    urls:
+      - name: al-going API
+        url: https://api.al-going.com/v3/api-docs
