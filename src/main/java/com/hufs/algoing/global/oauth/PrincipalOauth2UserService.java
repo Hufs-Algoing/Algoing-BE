@@ -1,0 +1,55 @@
+package com.hufs.algoing.global.oauth;
+
+import com.hufs.algoing.user.entity.Role;
+import com.hufs.algoing.user.entity.User;
+import com.hufs.algoing.user.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
+
+    @Autowired
+    UserRepository userRepository;
+
+
+    @Override
+    public OAuth2User loadUser(OAuth2UserRequest userRequest)
+            throws OAuth2AuthenticationException {
+
+        OAuth2User oAuth2User = super.loadUser(userRequest);
+
+        String provider = userRequest.getClientRegistration().getRegistrationId();
+        String providerId = oAuth2User.getAttribute("sub");
+        String name = provider + "_" + providerId;
+        String email = oAuth2User.getAttribute("email");
+        String picture = oAuth2User.getAttribute("picture");
+        Role role = Role.USER;
+
+        User userEntity = userRepository.findByEmail(email).orElse(null);
+        if (userEntity == null) {
+            userEntity = User.builder()
+                    .name(name)
+                    .email(email)
+                    .picture(picture)
+                    .role(role)
+                    .provider(provider)
+                    .providerId(providerId)
+                    .build();
+            userRepository.save(userEntity);
+        }
+
+
+        System.out.println("getAccessToken : " + userRequest.getAccessToken());
+        System.out.println("getClientRegistration : " + userRequest.getClientRegistration());
+        System.out.println("getAttributes : " + super.loadUser(userRequest).getAttributes());
+
+
+        return new PrincipalDetails(userEntity, oAuth2User.getAttributes());
+    }
+
+}

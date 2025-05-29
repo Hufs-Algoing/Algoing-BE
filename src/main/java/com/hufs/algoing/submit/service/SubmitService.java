@@ -7,10 +7,9 @@ import com.hufs.algoing.submit.dto.RecaptchaResponseDTO;
 import com.hufs.algoing.submit.dto.SubmitRequestDTO;
 import com.hufs.algoing.user.entity.User;
 import com.hufs.algoing.user.repository.UserRepository;
-
+import com.hufs.algoing.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -24,35 +23,36 @@ import java.time.Duration;
 public class SubmitService {
     private final UserRepository userRepository;
     private final WebClient.Builder webClientBuilder;
+    private final UserService userService;
 
-    public RecaptchaRequestDTO submit(SubmitRequestDTO dto)  {
+    public RecaptchaRequestDTO submit(SubmitRequestDTO dto) throws Exception {
 
-        User user = userRepository.findById(dto.getUserId()).orElseThrow(()-> new UserNotFoundException(ErrorStatus.USER_NOT_FOUND));
-        String email = user.getEmail();
-        String password = user.getPassword();
+        User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new UserNotFoundException(ErrorStatus.USER_NOT_FOUND));
+        String bojId = user.getBojId();
+        String bojPassword = userService.decrypt(user.getBojPassword());
 
         return RecaptchaRequestDTO.builder()
                 .userId(dto.getUserId())
                 .code(dto.getCode())
                 .language(dto.getLanguage())
-                .email(email)
-                .password(password)
+                .bojId(bojId)
+                .bojPassword(bojPassword)
                 .problemNum(dto.getProblemNum())
                 .build();
 
     }
 
     // 포인트 적립
-    public void judgePoint(RecaptchaResponseDTO dto, Long userId)  {
-        User user = userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException(ErrorStatus.USER_NOT_FOUND));
-        if(dto.isCorrect()){
+    public void judgePoint(RecaptchaResponseDTO dto, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(ErrorStatus.USER_NOT_FOUND));
+        if (dto.isCorrect()) {
             int originPoint = user.getUserPoint();
-            user.updatePoint(originPoint+5);
+            user.updatePoint(originPoint + 5);
         }
-        log.info("유저 id {}의 포인트가 {}로 증가했습니다.", user.getUserId(),user.getUserPoint());
+        log.info("유저 id {}의 포인트가 {}로 증가했습니다.", user.getUserId(), user.getUserPoint());
     }
 
-    public RecaptchaResponseDTO solveAndJudge(SubmitRequestDTO dto) {
+    public RecaptchaResponseDTO solveAndJudge(SubmitRequestDTO dto) throws Exception {
         RecaptchaRequestDTO recapDTO = submit(dto);
 
         RecaptchaResponseDTO result = webClientBuilder.build()
@@ -75,7 +75,6 @@ public class SubmitService {
 
         return result;
     }
-
 
 
 }

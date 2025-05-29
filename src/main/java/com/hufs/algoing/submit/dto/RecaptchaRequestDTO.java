@@ -2,7 +2,6 @@ package com.hufs.algoing.submit.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 @Builder
@@ -12,6 +11,6 @@ public class RecaptchaRequestDTO {
     private Long problemNum;
     private String language;
     private String code;
-    private String email;
-    private String password;
+    private String bojId;
+    private String bojPassword;
 }
