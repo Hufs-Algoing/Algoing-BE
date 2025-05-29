@@ -2,17 +2,14 @@ package com.hufs.algoing.user.entity;
 
 import com.hufs.algoing.problem.entity.SubmittedProblem;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -20,25 +17,32 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false, unique = true)
     private Long userId;
 
+    @Column(name = "email", unique = true, nullable = false)
+    private String email;
+
+    //Google OAuth2.0에서 제공하는 이름
+    //provider + providerId
+    private String name;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Role role;
+
+    //백준 아이디 비밀번호
+    //비밀번호는 암호화되어 저장, 사용할때 복호화 해야함
+    private String bojId;
+    private String bojPassword;
+
     // Solved.ac에서 사용하는 handle입니다.
     @Column(name = "handle", unique = true)
     private String handle;
 
-    // 알고잉에서 사용하는 닉네임입니다.
-    @Column(unique = true, nullable = false)
-    private String nickname;
-
-    @Column(name = "password", nullable = false)
-    private String password;
-
-    @Column(name = "email", unique = true, nullable = false)
-    private String email;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
@@ -48,7 +52,7 @@ public class User implements UserDetails {
 
     private String bio;
 
-    private String profileImageUrl;
+    private String picture;
 
     private Integer tier;
 
@@ -61,48 +65,31 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "userId")
     private List<SubmittedProblem> submittedProblem;
 
+    private String provider;
+    private String providerId;
 
     @Builder
-    public User(String handle, String password, String email, String nickname) {
-        this.handle = handle;
-        this.password = password;
+    public User
+            (String name, String email, String picture, Role role,
+             String provider, String providerId) {
+        this.name = name;
         this.email = email;
-        this.nickname = nickname;
+        this.picture = picture;
+        this.role = role;
+        this.provider = provider;
+        this.providerId = providerId;
         this.createdAt = LocalDateTime.now();
     }
 
-    //UserDetails 등에서 Username은 이메일입니다!!!!!
-    @Override
-    public String getUsername() {
-        return email;
+    public User update(String name, String picture) {
+        this.name = name;
+        this.picture = picture;
+        return this;
     }
 
-    @Override
-    public String getPassword() {
-        return password;
+    public String getRoleKey() {
+        return this.role.getValue();
     }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-    @Override // 권한 반환
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("user"));
-    }
-
 
     public void updatePoint(int point) {
         this.userPoint = point;
