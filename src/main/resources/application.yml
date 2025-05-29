@@ -25,6 +25,16 @@ spring:
         globally_quoted_identifiers : true
     show-sql: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: ${GOOGLE_REDIRECT}
+            scope: profile, email
+
 openai:
   secret: ${AI_KEY}
   url: ${AI_URL}
