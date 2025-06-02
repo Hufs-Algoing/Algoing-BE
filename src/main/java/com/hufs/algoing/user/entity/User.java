@@ -36,7 +36,9 @@ public class User {
 
     //백준 아이디 비밀번호
     //비밀번호는 암호화되어 저장, 사용할때 복호화 해야함
+    @Column(unique = true)
     private String bojId;
+
     private String bojPassword;
 
     // Solved.ac에서 사용하는 handle입니다.

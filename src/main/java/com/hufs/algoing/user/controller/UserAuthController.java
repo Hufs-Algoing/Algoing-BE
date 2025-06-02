@@ -1,6 +1,8 @@
 package com.hufs.algoing.user.controller;
 
 import com.hufs.algoing.global.code.ApiResponse;
+import com.hufs.algoing.global.exception.custom.BojIdExistException;
+import com.hufs.algoing.global.exception.custom.BojIdNotExistException;
 import com.hufs.algoing.global.oauth.PrincipalDetails;
 import com.hufs.algoing.user.dto.UserDTO;
 import com.hufs.algoing.user.service.UserService;
@@ -20,11 +22,19 @@ public class UserAuthController {
     private final UserService userService;
 
 
-    //TODO : 회원가입 후 아래 엔티티 null일경우 입력하게 하는 페이지로 리다이렉트하게 하기
     @Operation(summary = "백준 정보 입력", description = "회원가입 후 핸들을 입력합니다.")
     @PostMapping("/insertboj")
-    public ApiResponse<String> insertBoj(@RequestBody UserDTO dto, @AuthenticationPrincipal PrincipalDetails principal) throws Exception {
-        userService.insertBoj(dto, principal);
-        return ApiResponse.onSuccess("백준 정보가 성공적으로 입력되었습니다.");
+    public ApiResponse<String> insertBoj(@RequestBody UserDTO dto, @AuthenticationPrincipal PrincipalDetails principal) throws BojIdExistException, BojIdNotExistException {
+
+        try{
+            userService.insertBoj(dto, principal);
+            return ApiResponse.onSuccess("백준 정보가 성공적으로 입력되었습니다.");
+        } catch (BojIdExistException e) {
+            return ApiResponse.onFailure(e.getErrorReason().getCode(), e.getErrorReason().getMessage(), "백준 아이디가 이미 존재합니다.");
+        } catch (BojIdNotExistException e) {
+            return ApiResponse.onFailure(e.getErrorReason().getCode(), e.getErrorReason().getMessage(), "백준 아이디가 존재하지 않습니다.");
+        } catch (Exception e) {
+            return ApiResponse.onFailure("INTERNAL_SERVER_ERROR", "서버 오류가 발생했습니다.", null);
+        }
     }
 }

@@ -12,7 +12,9 @@ public enum ErrorStatus implements BaseErrorCode{
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER4001", "사용자가 없습니다."),
     HINT_NOT_FOUND(HttpStatus.BAD_REQUEST,"HINT4001","힌트가 없습니다."),
     SNAPSHOT_NOT_FOUND(HttpStatus.BAD_REQUEST,"SNAPSHOT4001","해당 유저의 스냅샷이 없습니다."),
-    PROBLEM_NOT_FOUND(HttpStatus.BAD_REQUEST, "PROBLEM4001","해당하는 문제가 없습니다." );
+    PROBLEM_NOT_FOUND(HttpStatus.BAD_REQUEST, "PROBLEM4001","해당하는 문제가 없습니다." ),
+    BOJ_ID_EXISTS(HttpStatus.BAD_REQUEST, "USER4002", "이미 존재하는 BOJ ID입니다."),
+    BOJ_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "USER4003", "존재하지 않는 BOJ ID입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

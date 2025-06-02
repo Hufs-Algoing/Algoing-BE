@@ -1,6 +1,7 @@
 package com.hufs.algoing.user.service;
 
 import com.hufs.algoing.global.code.ErrorStatus;
+import com.hufs.algoing.global.exception.custom.BojIdExistException;
 import com.hufs.algoing.global.exception.custom.ProblemNotFoundException;
 import com.hufs.algoing.global.exception.custom.UserNotFoundException;
 import com.hufs.algoing.global.oauth.PrincipalDetails;
@@ -59,7 +60,7 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(ErrorStatus.USER_NOT_FOUND));
     }
 
-    public void updateUserSolvedAcData(String bojId) {
+    public void updateUserSolvedAcData(String bojId) throws Exception {
         // solved.ac API로부터 유저 정보 가져오기
         SolvedAcProfileDTO profile = solvedAcService.getSolvedAcProfile(bojId);
         // User 엔티티로 변환 후 저장
@@ -80,6 +81,12 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 
         user.setBojId(userDTO.getBojId());
+        // bojId 중복 확인
+                if (userRepository.findByBojId(userDTO.getBojId()).isPresent()) {
+                    throw new BojIdExistException(ErrorStatus.BOJ_ID_EXISTS);
+                }else if(solvedAcService.getSolvedAcProfile(userDTO.getBojId()) == null) {
+                    throw new BojIdExistException(ErrorStatus.BOJ_ID_NOT_EXISTS);
+                }
         user.setBojPassword(encrypt(userDTO.getBojPassword()));
         // User 엔티티를 저장
         userRepository.save(user);
