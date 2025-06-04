@@ -39,7 +39,8 @@ public class IncProblemRecommendAlgorithm {
                     .map(p -> new IncProblemRecommendDTO(
                             p.getProblemId(),
                             p.getTitle(),
-                            p.getTag()
+                            p.getTag(),
+                            p.getLevel()
                     ))
                     .collect(Collectors.toList());
         }
@@ -83,7 +84,7 @@ public class IncProblemRecommendAlgorithm {
                 .collect(Collectors.toList());
 
         return recommendProblems.stream()
-                .map(p -> new IncProblemRecommendDTO(p.getProblemId(), p.getTitle(), p.getTag()))
+                .map(p -> new IncProblemRecommendDTO(p.getProblemId(), p.getTitle(), p.getTag(),p.getLevel()))
                 .collect(Collectors.toList());
     }
 

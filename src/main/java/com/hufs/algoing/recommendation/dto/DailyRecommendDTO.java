@@ -14,15 +14,5 @@ public class DailyRecommendDTO {
     private int level;
     private String tag;
     private double score;
-
-    @Override
-    public String toString() {
-        return "DailyRecommendDTO{" +
-                "problemId=" + problemId +
-                ", title='" + title + '\'' +
-                ", level=" + level +
-                ", tag='" + tag + '\'' +
-                ", score=" + score +
-                '}';
-    }
+    
 }

@@ -11,4 +11,5 @@ public class IncProblemRecommendDTO {
     Long problemId;
     String title;
     String tag;
+    Long level;
 }

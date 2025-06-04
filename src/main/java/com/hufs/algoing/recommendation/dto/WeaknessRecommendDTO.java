@@ -12,16 +12,7 @@ public class WeaknessRecommendDTO {
     private Long problemId;
     private String title;
     private String tag;
+    private Long level;
     private double finalScore;
-
-    @Override
-    public String toString() {
-        return "WeaknessRecommendDTO{" +
-                "problemId=" + problemId +
-                ", title=" + title +
-                ", tag=" + tag +
-                ", finalScore=" + finalScore +
-                '}';
-    }
 
 }

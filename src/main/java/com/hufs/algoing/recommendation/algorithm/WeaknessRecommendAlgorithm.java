@@ -45,6 +45,7 @@ public class WeaknessRecommendAlgorithm {
                            p.getProblemId(),
                            p.getTitle(),
                            p.getTag(),
+                           p.getLevel(),
                            0.0 // 기본 점수 없음
                    ))
                    .collect(Collectors.toList());
@@ -151,7 +152,7 @@ public class WeaknessRecommendAlgorithm {
                 double finalScore = typeWeightSum * 0.4 + distanceScore * 0.6; //유형은 결과에 40% 영향 점수는 60% 영향
 
                 //결과 DTO
-                return new WeaknessRecommendDTO(r.getId(),r.getProblem().getTitle(), r.getProblem().getTag(), finalScore);
+                return new WeaknessRecommendDTO(r.getId(),r.getProblem().getTitle(), r.getProblem().getTag(), r.getProblem().getLevel(),finalScore);
                 })
                 .collect(Collectors.toList());
 
