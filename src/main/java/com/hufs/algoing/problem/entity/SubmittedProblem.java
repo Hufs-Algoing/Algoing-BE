@@ -46,6 +46,8 @@ public class SubmittedProblem {
     @Column
     private LocalDate submittedDate;
 
+    private String recommendationSessionId;
+
     // submittedDate는 submittedAt에서 자동 생성
     @PrePersist
     public void prePersist() {
@@ -56,7 +58,7 @@ public class SubmittedProblem {
     public SubmittedProblem(
             User userId, Problem problemId,
             String answer, LocalDateTime submittedAt, LocalDate submittedDate, String language,
-            ProblemStatus status) {
+            ProblemStatus status, String recommendationSessionId) {
         this.userId = userId;
         this.problemId = problemId;
         this.answer = answer;
@@ -64,6 +66,7 @@ public class SubmittedProblem {
         this.language = language;
         this.status = status;
         this.submittedDate = LocalDate.now();
+        this.recommendationSessionId = recommendationSessionId;
     }
 
     //Solved일때만 true

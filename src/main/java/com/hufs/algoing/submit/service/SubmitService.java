@@ -8,6 +8,7 @@ import com.hufs.algoing.problem.entity.ProblemStatus;
 import com.hufs.algoing.problem.entity.SubmittedProblem;
 import com.hufs.algoing.problem.repository.ProblemRepository;
 import com.hufs.algoing.problem.repository.SubmittedProblemRepository;
+import com.hufs.algoing.recommendation.service.RecommendService;
 import com.hufs.algoing.submit.dto.RecaptchaRequestDTO;
 import com.hufs.algoing.submit.dto.RecaptchaResponseDTO;
 import com.hufs.algoing.submit.dto.SubmitRequestDTO;
@@ -116,6 +117,7 @@ public class SubmitService {
                 .answer(dto.getCode())
                 .language(dto.getLanguage())
                 .status(status)
+                .recommendationSessionId(dto.getRecommendationSessionId())
                 .build();
 
         // 제출 문제 저장
