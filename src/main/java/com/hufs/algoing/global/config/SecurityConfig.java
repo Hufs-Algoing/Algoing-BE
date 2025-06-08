@@ -1,5 +1,7 @@
 package com.hufs.algoing.global.config;
 
+import com.hufs.algoing.global.jwt.JwtAuthenticationFilter;
+import com.hufs.algoing.global.jwt.JwtUtil;
 import com.hufs.algoing.global.oauth.CustomOAuth2SuccessHandler;
 import com.hufs.algoing.global.oauth.PrincipalOauth2UserService;
 import com.hufs.algoing.user.entity.Role;
@@ -16,8 +18,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 import org.springframework.web.cors.CorsConfiguration;
@@ -38,6 +42,10 @@ public class SecurityConfig {
     private PrincipalOauth2UserService principalOauth2UserService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Bean
     public WebSecurityCustomizer configure() {
@@ -66,18 +74,22 @@ public class SecurityConfig {
                                 "/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login((oauth) -> oauth
                         .authorizationEndpoint(endpoint -> endpoint
                                 .authorizationRequestRepository(authorizationRequestRepository())
                         )
                         .loginPage("/login")
-                        .successHandler(new CustomOAuth2SuccessHandler(userRepository))
+                        .successHandler(customOAuth2SuccessHandler)
                         .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
                                 .userService(principalOauth2UserService))
                 )
                 .logout((logout) ->
                         logout.logoutUrl("/logout")
-                                .logoutSuccessUrl("/login")
+                                .logoutSuccessUrl("/")
                                 .invalidateHttpSession(true)
                 );
         return http.build();

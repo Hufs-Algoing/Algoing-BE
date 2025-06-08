@@ -4,6 +4,8 @@ import com.hufs.algoing.global.code.ErrorStatus;
 import com.hufs.algoing.global.exception.custom.BojIdExistException;
 import com.hufs.algoing.global.exception.custom.ProblemNotFoundException;
 import com.hufs.algoing.global.exception.custom.UserNotFoundException;
+import com.hufs.algoing.global.jwt.JwtTokenResponse;
+import com.hufs.algoing.global.jwt.JwtUtil;
 import com.hufs.algoing.global.oauth.PrincipalDetails;
 import com.hufs.algoing.problem.dto.SubmittedProblemDTO;
 import com.hufs.algoing.problem.dto.ZandiDTO;
@@ -23,6 +25,8 @@ import com.hufs.algoing.user.entity.BookMark;
 import com.hufs.algoing.user.entity.User;
 import com.hufs.algoing.user.repository.BookMarkRepository;
 import com.hufs.algoing.user.repository.UserRepository;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -54,6 +58,8 @@ public class UserService {
     private ReviewCustomRepository reviewCustomRepository;
     @Autowired
     private ProblemRepository problemRepository;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     public User getUserByUserId(Long userId) {
         // User 엔티티를 userId로 조회
@@ -216,6 +222,35 @@ public class UserService {
     public UserInfoDTO toUserInfoDTO(User user) {
 
         return new UserInfoDTO(user);
+    }
+
+
+
+    public String refreshAccessToken(String refreshToken) {
+        // refreshToken 유효성 검사
+        if (!jwtUtil.isValidToken(refreshToken)) {
+            throw new RuntimeException("유효하지 않은 RefreshToken입니다.");
+        }
+        Long userId = jwtUtil.getAllClaims(refreshToken).get("userId", Long.class);
+        return jwtUtil.generateToken(userId).getAccessToken();
+    }
+    public String getEmailFromHeader(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        if (token != null && token.startsWith("bearer ")) {
+            token = token.substring(7);
+        }
+        Claims claims = jwtUtil.getAllClaims(token);
+        Long userId = claims.get("userId", Long.class);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(ErrorStatus.USER_NOT_FOUND));
+        return user.getEmail();
+    }
+
+    public void saveRefreshToken(Long userId, JwtTokenResponse jwtToken) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(ErrorStatus.USER_NOT_FOUND));
+        user.setRefreshToken(jwtToken.getRefreshToken());
+        userRepository.save(user);
     }
 }
 
