@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 
 @Tag(name = "User Info API", description = "유저 정보 API")
@@ -46,6 +47,7 @@ public class UserInfoController {
     @GetMapping("/{userId}/zandi")
     public ApiResponse<List<ZandiDTO>> getUserZandi(
             @PathVariable Long userId){
+
         User u = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
         List<ZandiDTO> zandiDTOList = userService.getUserActivity(u);

@@ -1,5 +1,6 @@
 package com.hufs.algoing.problem.service;
 
+import com.hufs.algoing.global.code.ApiResponse;
 import com.hufs.algoing.problem.entity.Problem;
 import com.hufs.algoing.problem.repository.ProblemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,29 @@ public class ProblemService {
 
         problemRepository.saveAll(problems);
     }
+
+    public List<Problem> searchByTitleOrTagNamesOrDescriptionOrId(String keyword) {
+        List<Problem> results = new ArrayList<>();
+
+        // ID 검색 (숫자)
+        if (keyword != null && keyword.matches("^\\d+$")) {
+            try {
+                Long id = Long.parseLong(keyword);
+                problemRepository.findById(id).ifPresent(results::add);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        // 텍스트 검색
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            results.addAll(problemRepository.searchByKeyword(keyword));
+        }
+
+        return results.stream().distinct().toList();
+
+    }
+
+
 
 
 }

@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "SanpShot API", description = "유저의 스냅샷 API")
 @RestController
 @RequiredArgsConstructor
@@ -27,5 +29,13 @@ public class SnapShotController {
     public ApiResponse<SnapShotDTO> snapShot(@RequestParam Long userId){
         SnapShotDTO snapShotDTO = snapShotService.getRecentSnapShot(userId);
         return ApiResponse.onSuccess(snapShotDTO);
+    }
+
+    @Operation(summary = "유저의 전체 스냅샷 이력 조회", description = "그래프 생성용 데이터입니다.")
+    @Parameter(name = "userId", description = "사용자 ID")
+    @GetMapping("/history")
+    public ApiResponse<List<SnapShotDTO>> getSnapshotHistory(@RequestParam Long userId){
+        List<SnapShotDTO> history = snapShotService.getSnapshotHistory(userId);
+        return ApiResponse.onSuccess(history);
     }
 }
