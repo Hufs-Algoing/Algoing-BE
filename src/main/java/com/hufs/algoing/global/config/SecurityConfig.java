@@ -90,6 +90,7 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(List.of(
                 "https://www.al-going.com",
                 "https://al-going.com",
+                "https://api.al-going.com",
                 "http://localhost:*",
                 "http://43.200.206.181:*"
         ));
@@ -97,6 +98,7 @@ public class SecurityConfig {
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Set-Cookie", "Authorization"));
         configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -104,19 +106,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public WebFilter addSameSiteCookieFilter() {
-        return (exchange, chain) -> {
-            exchange.getResponse().beforeCommit(() -> {
-                String cookieHeader = exchange.getResponse().getHeaders().getFirst("Set-Cookie");
-                if (cookieHeader != null) {
-                    String updatedCookie = cookieHeader + "; SameSite=None; Secure";
-                    exchange.getResponse().getHeaders().set("Set-Cookie", updatedCookie);
-                }
-                return Mono.empty();
-            });
-            return chain.filter(exchange);
-        };
+    public FilterRegistrationBean<SameSiteCookieFilter> sameSiteCookieFilter() {
+        FilterRegistrationBean<SameSiteCookieFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new SameSiteCookieFilter());
+        registration.addUrlPatterns("/*");
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE); // 최우선 순위
+        return registration;
     }
+
 
     @Bean
     public CookieSerializer cookieSerializer() {
@@ -127,13 +124,6 @@ public class SecurityConfig {
         serializer.setDomainName(".al-going.com");
         serializer.setCookiePath("/");
         return serializer;
-    }
-    @Bean
-    public FilterRegistrationBean<SameSiteCookieFilter> sameSiteCookieFilter() {
-        FilterRegistrationBean<SameSiteCookieFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new SameSiteCookieFilter());
-        registration.addUrlPatterns("/*");
-        return registration;
     }
 
 
