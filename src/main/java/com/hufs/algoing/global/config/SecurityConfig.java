@@ -101,6 +101,7 @@ public class SecurityConfig {
         serializer.setSameSite("None"); // 크로스 도메인 쿠키 허용
         serializer.setUseSecureCookie(true); // HTTPS 전용
         serializer.setDomainName(".al-going.com"); // 상위 도메인으로 설정
+        serializer.setCookiePath("/");
         return serializer;
     }
 
