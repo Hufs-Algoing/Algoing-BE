@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "Problem API", description = "문제 API")
 @RestController
 @RequestMapping("/api/problems/")
@@ -30,6 +32,15 @@ public class ProblemController {
         problemService.crawlProblemsByTagWithTier(tag);
         return ApiResponse.onSuccess("크롤링 완료");
     }
+
+    @Operation(summary = "문제 검색", description = "제목 또는 태그이름으로 문제를 검색합니다.")
+    @GetMapping("/search")
+    public ApiResponse<List<Problem>> searchProblems(@RequestParam String keyword) {
+        List<Problem> result = problemService.searchByTitleOrTagNamesOrDescriptionOrId(keyword);
+        return ApiResponse.onSuccess(result);
+    }
+
+
 
 
 }

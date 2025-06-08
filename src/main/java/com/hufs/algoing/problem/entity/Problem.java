@@ -41,7 +41,7 @@ public class Problem {
     @Lob
     private String tag;
 
-    @Lob
+    @Column(length = 256)
     private String tagNames;
 
     private String time;

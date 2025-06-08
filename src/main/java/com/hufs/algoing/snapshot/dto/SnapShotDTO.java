@@ -34,7 +34,6 @@ public class SnapShotDTO {
     @Schema(description = "스냅샷 생성 일시", example = "2025-06-08T12:34:56")
     private LocalDateTime createdAt;
 
-
     public static SnapShotDTO fromEntity(Snapshot entity) {
         Long readbility = entity.getReadbility();
         Long optimization = entity.getOptimization();
