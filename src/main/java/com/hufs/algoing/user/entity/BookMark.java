@@ -15,7 +15,8 @@ import lombok.Setter;
 public class BookMark {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookMarkId;
     
     @ManyToOne(cascade = CascadeType.MERGE, targetEntity = User.class)

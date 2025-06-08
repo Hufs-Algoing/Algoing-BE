@@ -28,7 +28,7 @@ public class SubmittedProblem {
     @JoinColumn(name = "problem_id")
     private Problem problemId;
 
-    @Column
+    @Column(name="answer", length=256)
     @Lob
     private String answer;
 
