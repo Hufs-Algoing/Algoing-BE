@@ -20,12 +20,6 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         this.userRepository = userRepository;
     }
 
-    @Value("${app.oauth.redirect.profile}")
-    private String profileRedirect;
-
-    @Value("${app.oauth.redirect.main}")
-    private String mainRedirect;
-
     @Override
     public void onAuthenticationSuccess(
             HttpServletRequest request,
@@ -42,9 +36,9 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 
         //TODO: 배포할 때 프론트 서버 주소로 바꿔야합니다
         if (user.getBojId() == null) {
-            response.sendRedirect(profileRedirect);
+            response.sendRedirect("https://al-going.com/profile");
         } else {
-            response.sendRedirect(mainRedirect);
+            response.sendRedirect("https://al-going.com/main");
         }
     }
 }
