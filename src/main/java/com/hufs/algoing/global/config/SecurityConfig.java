@@ -88,6 +88,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of(
+                "https://algoing.vercel.app",
                 "https://www.al-going.com",
                 "https://al-going.com",
                 "https://api.al-going.com",
