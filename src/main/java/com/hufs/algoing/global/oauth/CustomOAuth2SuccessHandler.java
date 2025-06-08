@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 
@@ -18,6 +19,12 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
     public CustomOAuth2SuccessHandler(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    @Value("${app.oauth.redirect.profile}")
+    private String profileRedirect;
+
+    @Value("${app.oauth.redirect.main}")
+    private String mainRedirect;
 
     @Override
     public void onAuthenticationSuccess(
@@ -35,10 +42,9 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 
         //TODO: 배포할 때 프론트 서버 주소로 바꿔야합니다
         if (user.getBojId() == null) {
-            response.sendRedirect("https://al-going.com/profile");
+            response.sendRedirect(profileRedirect);
         } else {
-            response.sendRedirect("https://al-going.com/main");
+            response.sendRedirect(mainRedirect);
         }
-
     }
 }

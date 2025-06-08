@@ -84,7 +84,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://your-frontend.vercel.app", "http://43.200.206.181:8080", "http://43.200.206.181:5000", "http://localhost:8080", "http://localhost:3000", "http://localhost:5000", "https://api.al-going.com", "https://www.al-going.com"));
+        configuration.setAllowedOrigins(List.of("https://your-frontend.vercel.app", "http://43.200.206.181:8080", "http://43.200.206.181:5000", "http://localhost:8080", "http://localhost:3000", "http://localhost:5000", "https://api.al-going.com", "https://www.al-going.com","https://*.al-going.com", "http://localhost:*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
@@ -98,9 +98,9 @@ public class SecurityConfig {
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
         serializer.setCookieName("JSESSIONID");
-        serializer.setSameSite("None"); // 크로스 도메인 쿠키 허용
+        serializer.setSameSite("Lax"); // 크로스 도메인 쿠키 허용
         serializer.setUseSecureCookie(true); // HTTPS 전용
-        serializer.setDomainName(".al-going.com"); // 상위 도메인으로 설정
+        serializer.setDomainName("al-going.com"); // 상위 도메인으로 설정
         serializer.setCookiePath("/");
         return serializer;
     }
