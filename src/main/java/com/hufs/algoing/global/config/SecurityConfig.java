@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.session.web.http.CookieSerializer;
+import org.springframework.session.web.http.DefaultCookieSerializer;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -82,7 +84,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://your-frontend.vercel.app", "http://43.200.206.181:8080", "http://43.200.206.181:5000", "http://localhost:8080", "http://localhost:3000", "http://localhost:5000", "https://api.al-going.com"));
+        configuration.setAllowedOrigins(List.of("https://your-frontend.vercel.app", "http://43.200.206.181:8080", "http://43.200.206.181:5000", "http://localhost:8080", "http://localhost:3000", "http://localhost:5000", "https://api.al-going.com", "https://www.al-going.com"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
@@ -92,4 +94,15 @@ public class SecurityConfig {
 
         return source;
     }
+    @Bean
+    public CookieSerializer cookieSerializer() {
+        DefaultCookieSerializer serializer = new DefaultCookieSerializer();
+        serializer.setCookieName("JSESSIONID");
+        serializer.setSameSite("None"); // 크로스 도메인 쿠키 허용
+        serializer.setUseSecureCookie(true); // HTTPS 전용
+        serializer.setDomainName(".al-going.com"); // 상위 도메인으로 설정
+        return serializer;
+    }
+
+
 }
