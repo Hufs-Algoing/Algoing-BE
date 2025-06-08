@@ -17,7 +17,8 @@ import com.hufs.algoing.review.repository.ReviewCustomRepository;
 import com.hufs.algoing.solvedac.dto.SolvedAcProfileDTO;
 import com.hufs.algoing.solvedac.service.SolvedAcService;
 import com.hufs.algoing.user.dto.BookMarkDTO;
-import com.hufs.algoing.user.dto.UserDTO;
+import com.hufs.algoing.user.dto.BojInsertDTO;
+import com.hufs.algoing.user.dto.UserInfoDTO;
 import com.hufs.algoing.user.entity.BookMark;
 import com.hufs.algoing.user.entity.User;
 import com.hufs.algoing.user.repository.BookMarkRepository;
@@ -75,24 +76,24 @@ public class UserService {
     }
 
     // 가입 후 핸들 입력
-    public void insertBoj(UserDTO userDTO, @AuthenticationPrincipal PrincipalDetails principal) throws Exception {
+    public void insertBoj(BojInsertDTO bojInsertDTO, @AuthenticationPrincipal PrincipalDetails principal) throws Exception {
 // 현재 인증된 사용자의 이메일로 User 엔티티를 조회
         User user = userRepository.findByEmail(principal.getUser().getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 
-        user.setBojId(userDTO.getBojId());
+        user.setBojId(bojInsertDTO.getBojId());
         // bojId 중복 확인
-                if (userRepository.findByBojId(userDTO.getBojId()).isPresent()) {
+                if (userRepository.findByBojId(bojInsertDTO.getBojId()).isPresent()) {
                     throw new BojIdExistException(ErrorStatus.BOJ_ID_EXISTS);
-                }else if(solvedAcService.getSolvedAcProfile(userDTO.getBojId()) == null) {
+                }else if(solvedAcService.getSolvedAcProfile(bojInsertDTO.getBojId()) == null) {
                     throw new BojIdExistException(ErrorStatus.BOJ_ID_NOT_EXISTS);
                 }
-        user.setBojPassword(encrypt(userDTO.getBojPassword()));
+        user.setBojPassword(encrypt(bojInsertDTO.getBojPassword()));
         // User 엔티티를 저장
         userRepository.save(user);
 
         // SolvedAcService를 사용하여 유저 정보를 업데이트
-        updateUserSolvedAcData(userDTO.getBojId());
+        updateUserSolvedAcData(bojInsertDTO.getBojId());
     }
 
     public List<ZandiDTO> getUserActivity(User user) {
@@ -210,6 +211,11 @@ public class UserService {
         cipher.init(Cipher.DECRYPT_MODE, keySpec);
         byte[] decoded = Base64.getDecoder().decode(encryptedData);
         return new String(cipher.doFinal(decoded));
+    }
+
+    public UserInfoDTO toUserInfoDTO(User user) {
+
+        return new UserInfoDTO(user);
     }
 }
 

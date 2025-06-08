@@ -1,5 +1,7 @@
 package com.hufs.algoing.problem.entity;
 
+import com.hufs.algoing.post.entity.Post;
+import com.hufs.algoing.problem.dto.SubmittedProblemDTO;
 import com.hufs.algoing.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -9,6 +11,8 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -48,6 +52,10 @@ public class SubmittedProblem {
 
     private String recommendationSessionId;
 
+    @OneToMany(mappedBy = "submittedProblem")
+    private List<Post> posts = new ArrayList<>();
+
+
     // submittedDate는 submittedAt에서 자동 생성
     @PrePersist
     public void prePersist() {
@@ -75,4 +83,18 @@ public class SubmittedProblem {
     }
 
 
+    public SubmittedProblemDTO toSubmittedProblemDTO() {
+        return new SubmittedProblemDTO(
+                this.submittedProblemId,
+                this.userId.getUserId(),
+                this.problemId.getProblemId(),
+                this.problemId.getTitle(),
+                this.answer,
+                this.problemId.getTag(),
+                this.problemId.getLevel(),
+                this.language,
+                this.submittedAt,
+                this.submittedDate
+        );
+    }
 }

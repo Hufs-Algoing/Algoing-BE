@@ -10,10 +10,7 @@ import com.hufs.algoing.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,36 +27,32 @@ public class UserInfoController {
     }
 
     @Operation(summary = "유저 정보 조회", description = "해당 유저 ID를 기반으로 유저 정보를 조회합니다.")
-    @GetMapping
-    public ApiResponse<UserInfoDTO> getUserInfo(@AuthenticationPrincipal PrincipalDetails p) {
-        UserInfoDTO userInfoDTO = new UserInfoDTO();
-        userInfoDTO.setUserId(p.getUser().getUserId());
-        userInfoDTO.setEmail(p.getUser().getEmail());
-        userInfoDTO.setHandle(p.getUser().getHandle());
-        userInfoDTO.setRole(p.getUser().getRole());
-        userInfoDTO.setName(p.getUser().getName());
-        userInfoDTO.setBojId(p.getUser().getBojId());
-        userInfoDTO.setBio(p.getUser().getBio());
-        userInfoDTO.setPicture(p.getUser().getPicture());
-        userInfoDTO.setTier(p.getUser().getTier());
-        userInfoDTO.setSolvedCount(p.getUser().getSolvedCount());
-        userInfoDTO.setUserPoint(p.getUser().getUserPoint());
-        userInfoDTO.setCreatedAt(p.getUser().getCreatedAt());
+    @GetMapping("/{userId}")
+    public ApiResponse<UserInfoDTO> getUserInfo(@PathVariable Long userId) {
+        User u = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+        UserInfoDTO userInfoDTO = userService.toUserInfoDTO(u);
+        return ApiResponse.onSuccess(userInfoDTO);
+    }
 
+    @Operation(summary = "유저 정보 조회", description = "현재 로그인된 유저를 기반으로 유저 정보를 조회합니다.")
+    @GetMapping
+    public ApiResponse<UserInfoDTO> getUserInfoiii(@AuthenticationPrincipal PrincipalDetails p) {
+        UserInfoDTO userInfoDTO = userService.toUserInfoDTO(p.getUser());
         return ApiResponse.onSuccess(userInfoDTO);
     }
 
     @Operation(summary = "Zandi", description = "해당 유저 ID를 기반으로 유저 제출문제를 조회하여 날짜와 날짜별 성공문제 수 반환.")
-    @GetMapping("/zandi")
+    @GetMapping("/{userId}/zandi")
     public ApiResponse<List<ZandiDTO>> getUserZandi(
-            @RequestParam("userId") Long userId){
+            @PathVariable Long userId){
         User u = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
         List<ZandiDTO> zandiDTOList = userService.getUserActivity(u);
         return ApiResponse.onSuccess(zandiDTOList);
     }
 
-    @Operation(summary = "Zandi", description = "해당 유저 ID를 기반으로 유저 제출문제를 조회하여 날짜와 날짜별 성공문제 수 반환. 로그인 되어있어야 합니다.")
+    @Operation(summary = "Zandi", description = "로그인 정보를 기반으로 유저 제출문제를 조회하여 날짜와 날짜별 성공문제 수 반환. 로그인 되어있어야 합니다.")
     @GetMapping("/zandiii")
     public ApiResponse<List<ZandiDTO>> getUserZandiii(
             @AuthenticationPrincipal PrincipalDetails p) {
