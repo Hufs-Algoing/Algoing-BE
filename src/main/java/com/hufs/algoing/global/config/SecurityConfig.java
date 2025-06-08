@@ -22,6 +22,8 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.server.WebFilter;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -98,6 +100,21 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public WebFilter addSameSiteCookieFilter() {
+        return (exchange, chain) -> {
+            exchange.getResponse().beforeCommit(() -> {
+                String cookieHeader = exchange.getResponse().getHeaders().getFirst("Set-Cookie");
+                if (cookieHeader != null) {
+                    String updatedCookie = cookieHeader + "; SameSite=None; Secure";
+                    exchange.getResponse().getHeaders().set("Set-Cookie", updatedCookie);
+                }
+                return Mono.empty();
+            });
+            return chain.filter(exchange);
+        };
     }
 
     @Bean
