@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,6 +21,7 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
@@ -53,6 +56,7 @@ public class SecurityConfig {
                         corsConfig.configurationSource(corsConfigurationSource())
                 )
                 .authorizeHttpRequests((auth) -> auth
+
                         .requestMatchers
                                 ("/admin/**").hasRole(Role.ADMIN.name())
                         .requestMatchers
@@ -80,27 +84,39 @@ public class SecurityConfig {
         return http.build();
 
     }
+    @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public CorsFilter corsFilter() {
+        return new CorsFilter(corsConfigurationSource());
+    }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://your-frontend.vercel.app", "http://43.200.206.181:8080", "http://43.200.206.181:5000", "http://localhost:8080", "http://localhost:3000", "http://localhost:5000", "https://api.al-going.com", "https://www.al-going.com","https://*.al-going.com", "http://localhost:*"));
+        // allowedOrigins → allowedOriginPatterns로 변경
+        configuration.setAllowedOriginPatterns(List.of(
+                "https://*.al-going.com",
+                "http://localhost:*",
+                "http://43.200.206.181:*"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("Set-Cookie", "Authorization")); // 추가
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-
         return source;
     }
+
     @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
         serializer.setCookieName("JSESSIONID");
         serializer.setSameSite("None"); // 크로스 도메인 쿠키 허용
         serializer.setUseSecureCookie(true); // HTTPS 전용
-        serializer.setDomainName("al-going.com"); // 상위 도메인으로 설정
+        serializer.setDomainName(".al-going.com"); // 상위 도메인으로 설정
         serializer.setCookiePath("/");
         return serializer;
     }
