@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 
 @Getter
 @Builder
@@ -29,6 +31,8 @@ public class SnapShotDTO {
     @Schema(description = "중복성 점수 (정규화된 백분율)", example = "60.0")
     private double normalizedDuplicate;
 
+    @Schema(description = "스냅샷 생성 일시", example = "2025-06-08T12:34:56")
+    private LocalDateTime createdAt;
 
     public static SnapShotDTO fromEntity(Snapshot entity) {
         Long readbility = entity.getReadbility();
@@ -46,6 +50,7 @@ public class SnapShotDTO {
                 .normalizedReadbility(Double.parseDouble(normalizedReadbility))
                 .normalizedOptimization(Double.parseDouble(normalizedOptimization))
                 .normalizedDuplicate(Double.parseDouble(normalizedDuplicate))
+                .createdAt(entity.getCreatedAt())
                 .build();
     }
 

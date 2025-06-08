@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -68,6 +70,13 @@ public class SnapShotService {
     // 마지막 스냅샷으로부터 하루 이상 지남 유무 확인
     private boolean isOverOneDay(LocalDateTime lastSnapshotTime) {
         return Duration.between(lastSnapshotTime, LocalDateTime.now()).toHours() >= 24;
+    }
+
+    public List<SnapShotDTO> getSnapshotHistory(Long userId) {
+        List<Snapshot> snapshots = snapShotRepository.getSnapshotHistory(userId);
+        return snapshots.stream()
+                .map(SnapShotDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
 
