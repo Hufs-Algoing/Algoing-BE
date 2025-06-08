@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,13 @@ public class SnapShotService {
                 .orElseThrow(() -> new SnapShotNotFoundException(ErrorStatus.SNAPSHOT_NOT_FOUND));
 
         return SnapShotDTO.fromEntity(snapshot);
+    }
+
+    public List<SnapShotDTO> getSnapshotHistory(Long userId) {
+        List<Snapshot> snapshots = snapShotRepository.getSnapshotHistory(userId);
+        return snapshots.stream()
+                .map(SnapShotDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     public void checkAndSaveSnapShot(User user, Review review){

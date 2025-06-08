@@ -31,6 +31,8 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
 
+        request.getSession(true).setAttribute("userEmail", email);
+
         //TODO: 배포할 때 프론트 서버 주소로 바꿔야합니다
         if (user.getBojId() == null) {
             response.sendRedirect("http://localhost:3000/profile");
