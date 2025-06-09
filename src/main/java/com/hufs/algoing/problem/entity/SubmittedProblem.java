@@ -32,7 +32,7 @@ public class SubmittedProblem {
     @JoinColumn(name = "problem_id")
     private Problem problemId;
 
-    @Column
+    @Column(length = 256)
     @Lob
     private String answer;
 
