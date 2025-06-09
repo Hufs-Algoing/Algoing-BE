@@ -69,7 +69,7 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
     private Cookie createCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(60 * 60 * 60); // 60 hours
-        cookie.setSecure(false); // Set to true if using HTTPS
+        cookie.setSecure(true); // Set to true if using HTTPS
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         return cookie;
