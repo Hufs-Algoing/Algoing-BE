@@ -34,10 +34,16 @@ public class WeaknessRecommendAlgorithm {
         //리뷰가 7개 이하면 해당 유저 티어 +-2차이의 문제 추천
        if(userReview==null || userReview.size()==0 || userReview.size() <= 7){
            int userLevel = user.getTier(); // 유저 티어
+
+           Set<Long> solvedProblemIds = submittedProblems.stream()
+                   .filter(p -> "solved".equalsIgnoreCase(String.valueOf(p.getStatus())))
+                   .map(p -> p.getProblemId().getProblemId())
+                   .collect(Collectors.toSet());
+
            List<Problem> randomProblem = problems.stream()
-                   .filter(p -> Math.abs(p.getLevel() - userLevel) <= 2) // 유저 티어 ±2
-                   .filter(p -> !submittedProblems.contains(p.getProblemId())) // 이미 푼 문제 제외
-                   .limit(3) // 3개 추천
+                   .filter(p -> Math.abs(p.getLevel() - userLevel) <= 2)
+                   .filter(p -> !solvedProblemIds.contains(p.getProblemId()))
+                   .limit(3)
                    .collect(Collectors.toList());
 
            return randomProblem.stream()
