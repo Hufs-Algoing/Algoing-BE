@@ -11,7 +11,7 @@ import lombok.Setter;
 public class WeaknessRecommendDTO {
     private Long problemId;
     private String title;
-    private String tag;
+    private String tagNames;
     private Long level;
     private double finalScore;
 

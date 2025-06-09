@@ -9,11 +9,11 @@ import com.hufs.algoing.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 
 @Tag(name = "User Auth API", description = "유저 로그인 API")
 @RestController
@@ -37,6 +37,16 @@ public class UserAuthController {
             return ApiResponse.onFailure(e.getErrorReason().getCode(), e.getErrorReason().getMessage(), "백준 아이디가 존재하지 않습니다.");
         } catch (Exception e) {
             return ApiResponse.onFailure("INTERNAL_SERVER_ERROR", "서버 오류가 발생했습니다.", null);
+        }
+    }
+
+    @GetMapping("/checkPrincipal")
+    public ApiResponse<String> checkPrincipal() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return ApiResponse.onFailure("UNAUTHORIZED", "인증 정보 없음", null);
+        } else {
+            return ApiResponse.onSuccess("사용자: " + authentication.getName());
         }
     }
 }

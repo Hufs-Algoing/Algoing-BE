@@ -10,6 +10,6 @@ import lombok.Setter;
 public class IncProblemRecommendDTO {
     Long problemId;
     String title;
-    String tag;
+    String tagNames;
     Long level;
 }

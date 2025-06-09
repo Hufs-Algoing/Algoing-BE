@@ -24,8 +24,9 @@ public class DailyRecommendAlgorithm {
         // 유저가 푼 문제 번호 -> USER_SOLVED_PROBLEM 테이블 Problem_num값 가져오기
         List<Long> solvedProblemIds = solvedProblems.stream()
                 .filter(solvedProblem -> {
+                    boolean isSolved = "SOLVED".equalsIgnoreCase(String.valueOf(solvedProblem.getStatus()));
                     boolean isMatchingUser = solvedProblem.getUserId().getUserId().equals(user.getUserId()); //solvedProblem이 user객체 참조 -> 다시 userId조회
-                    return isMatchingUser;
+                    return isMatchingUser&& isSolved;
                 }) // 해당 유저가 푼 문제만 필터링
                 .map(solvedProblem -> {
                     Long problemId = solvedProblem.getProblemId().getProblemId();

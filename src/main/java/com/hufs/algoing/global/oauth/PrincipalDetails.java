@@ -1,5 +1,6 @@
 package com.hufs.algoing.global.oauth;
 
+import com.hufs.algoing.user.dto.UserInfoDTO;
 import com.hufs.algoing.user.entity.User;
 import lombok.Data;
 import lombok.Getter;
@@ -17,6 +18,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     @Getter
     private User user;
     private Map<String, Object> attributes;
+    private UserInfoDTO userInfoDTO;
 
     public PrincipalDetails(User user) {
         this.user = user;

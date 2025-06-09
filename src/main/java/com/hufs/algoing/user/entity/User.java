@@ -70,6 +70,10 @@ public class User {
     private String provider;
     private String providerId;
 
+    @Getter
+    @Setter
+    private String token;
+
     @Builder
     public User
             (String name, String email, String picture, Role role,

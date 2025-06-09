@@ -12,7 +12,7 @@ public class DailyRecommendDTO {
     private Long problemId;
     private String title;
     private int level;
-    private String tag;
+    private String tagNames;
     private double score;
     
 }

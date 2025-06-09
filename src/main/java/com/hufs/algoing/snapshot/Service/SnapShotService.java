@@ -31,6 +31,13 @@ public class SnapShotService {
         return SnapShotDTO.fromEntity(snapshot);
     }
 
+    public List<SnapShotDTO> getSnapshotHistory(Long userId) {
+        List<Snapshot> snapshots = snapShotRepository.getSnapshotHistory(userId);
+        return snapshots.stream()
+                .map(SnapShotDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+
     public void checkAndSaveSnapShot(User user, Review review){
         Optional<Snapshot> recent = snapShotRepository.getRecentSnapshot(user.getUserId());
 
@@ -70,13 +77,6 @@ public class SnapShotService {
     // 마지막 스냅샷으로부터 하루 이상 지남 유무 확인
     private boolean isOverOneDay(LocalDateTime lastSnapshotTime) {
         return Duration.between(lastSnapshotTime, LocalDateTime.now()).toHours() >= 24;
-    }
-
-    public List<SnapShotDTO> getSnapshotHistory(Long userId) {
-        List<Snapshot> snapshots = snapShotRepository.getSnapshotHistory(userId);
-        return snapshots.stream()
-                .map(SnapShotDTO::fromEntity)
-                .collect(Collectors.toList());
     }
 
 

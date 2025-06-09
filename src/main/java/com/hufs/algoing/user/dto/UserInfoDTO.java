@@ -3,12 +3,12 @@ package com.hufs.algoing.user.dto;
 import com.hufs.algoing.user.entity.Role;
 import com.hufs.algoing.user.entity.User;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
 public class UserInfoDTO {
     private Long userId;
     private String email;
@@ -22,6 +22,7 @@ public class UserInfoDTO {
     private int solvedCount;
     private int userPoint;
     private LocalDateTime createdAt;
+    private String token;
 
 
     public UserInfoDTO(User user) {

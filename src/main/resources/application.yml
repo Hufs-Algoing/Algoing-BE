@@ -22,7 +22,7 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
         auto_quote_keyword: true
-        globally_quoted_identifiers : true
+        globally_quoted_identifiers: true
     show-sql: true
 
   security:
@@ -51,3 +51,6 @@ springdoc:
     operations-sorter: method
     tags-sorter: alpha
     path: "swagger.html"
+
+jwt:
+  secret: RjmvkEUizZYUTz6JHVE4LtYPL0k8eMF0

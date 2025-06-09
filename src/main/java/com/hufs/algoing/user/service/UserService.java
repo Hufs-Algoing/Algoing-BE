@@ -4,6 +4,7 @@ import com.hufs.algoing.global.code.ErrorStatus;
 import com.hufs.algoing.global.exception.custom.BojIdExistException;
 import com.hufs.algoing.global.exception.custom.ProblemNotFoundException;
 import com.hufs.algoing.global.exception.custom.UserNotFoundException;
+import com.hufs.algoing.global.jwt.JwtUtil;
 import com.hufs.algoing.global.oauth.PrincipalDetails;
 import com.hufs.algoing.problem.dto.SubmittedProblemDTO;
 import com.hufs.algoing.problem.dto.ZandiDTO;
@@ -16,8 +17,8 @@ import com.hufs.algoing.review.entity.Review;
 import com.hufs.algoing.review.repository.ReviewCustomRepository;
 import com.hufs.algoing.solvedac.dto.SolvedAcProfileDTO;
 import com.hufs.algoing.solvedac.service.SolvedAcService;
-import com.hufs.algoing.user.dto.BookMarkDTO;
 import com.hufs.algoing.user.dto.BojInsertDTO;
+import com.hufs.algoing.user.dto.BookMarkDTO;
 import com.hufs.algoing.user.dto.UserInfoDTO;
 import com.hufs.algoing.user.entity.BookMark;
 import com.hufs.algoing.user.entity.User;
@@ -54,6 +55,8 @@ public class UserService {
     private ReviewCustomRepository reviewCustomRepository;
     @Autowired
     private ProblemRepository problemRepository;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     public User getUserByUserId(Long userId) {
         // User 엔티티를 userId로 조회
@@ -83,11 +86,11 @@ public class UserService {
 
         user.setBojId(bojInsertDTO.getBojId());
         // bojId 중복 확인
-                if (userRepository.findByBojId(bojInsertDTO.getBojId()).isPresent()) {
-                    throw new BojIdExistException(ErrorStatus.BOJ_ID_EXISTS);
-                }else if(solvedAcService.getSolvedAcProfile(bojInsertDTO.getBojId()) == null) {
-                    throw new BojIdExistException(ErrorStatus.BOJ_ID_NOT_EXISTS);
-                }
+        if (userRepository.findByBojId(bojInsertDTO.getBojId()).isPresent()) {
+            throw new BojIdExistException(ErrorStatus.BOJ_ID_EXISTS);
+        } else if (solvedAcService.getSolvedAcProfile(bojInsertDTO.getBojId()) == null) {
+            throw new BojIdExistException(ErrorStatus.BOJ_ID_NOT_EXISTS);
+        }
         user.setBojPassword(encrypt(bojInsertDTO.getBojPassword()));
         // User 엔티티를 저장
         userRepository.save(user);
@@ -217,5 +220,6 @@ public class UserService {
 
         return new UserInfoDTO(user);
     }
+
 }
 

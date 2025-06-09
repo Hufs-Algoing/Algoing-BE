@@ -28,12 +28,18 @@ public class IncProblemRecommendAlgorithm {
             int userLevel = user.getTier(); // 유저 티어
             List<Problem> allProblems = problemRepository.findAll();
 
+            // usersubmitted에서 문제 id만 추출
+            Set<Long> solvedProblemIds = userSubmitted.stream()
+                    .filter(s -> "SOLVED".equalsIgnoreCase(String.valueOf(s.getStatus())))
+                    .map(s -> s.getProblemId().getProblemId())
+                    .collect(Collectors.toSet());
+
+            // 이미 푼 문제 제외
             List<Problem> randomProblem = allProblems.stream()
-                    .filter(p -> Math.abs(p.getLevel() - userLevel) <= 2) // 티어 ±2
-                    .filter(p -> !userSubmitted.contains(p.getProblemId())) // 이미 푼 문제 제외
+                    .filter(p -> Math.abs(p.getLevel() - userLevel) <= 2)
+                    .filter(p -> !solvedProblemIds.contains(p.getProblemId()))
                     .limit(3)
                     .collect(Collectors.toList());
-
 
             return randomProblem.stream()
                     .map(p -> new IncProblemRecommendDTO(
@@ -68,6 +74,7 @@ public class IncProblemRecommendAlgorithm {
         //유저가 아직 풀지 않은 문제들 중에서 약한 태그 포함된 문제 찾기
         List<Problem> allProblems = problemRepository.findAll();
         Set<Long> solvedProblemIds = userSubmitted.stream()
+                .filter(s -> "SOLVED".equalsIgnoreCase(String.valueOf(s.getStatus())))
                 .map(s -> s.getProblemId().getProblemId())
                 .collect(Collectors.toSet());
 
