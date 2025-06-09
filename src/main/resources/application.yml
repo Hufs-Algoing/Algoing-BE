@@ -53,4 +53,4 @@ springdoc:
     path: "swagger.html"
 
 jwt:
-  secret: RjmvkEUizZYUTz6JHVE4LtYPL0k8eMF0
+  secret: ${SECRET_KEY}
