@@ -79,10 +79,9 @@ public class SecurityConfig {
                                 .userService(principalOauth2UserService))
                 )
                 .logout(logout -> logout
-                                .logoutUrl("/api/logout")
-                                .logoutSuccessUrl("/login")
+                                .logoutUrl("/logout")
+                                .logoutSuccessUrl("/")
                                 .invalidateHttpSession(true)
-                                .deleteCookies("Authorization")
                 );
         return http.build();
     }
