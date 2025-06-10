@@ -36,6 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (cookies == null) {
             System.out.println("쿠키 자체가 없음으로 넘김");
+            SecurityContextHolder.clearContext();
             filterChain.doFilter(request, response);
             return;
         }
@@ -50,7 +51,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         //Authorization 헤더 검증
         if (authorization == null) {
-
+            SecurityContextHolder.clearContext();
             System.out.println("token null");
             filterChain.doFilter(request, response);
 
