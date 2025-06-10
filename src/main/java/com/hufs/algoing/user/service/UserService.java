@@ -78,26 +78,52 @@ public class UserService {
 
     }
 
-    // 가입 후 핸들 입력
+//    // 가입 후 핸들 입력
+//    public void insertBoj(BojInsertDTO bojInsertDTO, @AuthenticationPrincipal PrincipalDetails principal) throws Exception {
+//// 현재 인증된 사용자의 이메일로 User 엔티티를 조회
+//        User user = userRepository.findByEmail(principal.getUser().getEmail())
+//                .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
+//
+//        user.setBojId(bojInsertDTO.getBojId());
+//        // bojId 중복 확인
+//        if (userRepository.findByBojId(bojInsertDTO.getBojId()).isPresent()) {
+//            throw new BojIdExistException(ErrorStatus.BOJ_ID_EXISTS);
+//        } else if (solvedAcService.getSolvedAcProfile(bojInsertDTO.getBojId()) == null) {
+//            throw new BojIdExistException(ErrorStatus.BOJ_ID_NOT_EXISTS);
+//        }
+//        user.setBojPassword(encrypt(bojInsertDTO.getBojPassword()));
+//        // User 엔티티를 저장
+//        userRepository.save(user);
+//
+//        // SolvedAcService를 사용하여 유저 정보를 업데이트
+//        updateUserSolvedAcData(bojInsertDTO.getBojId());
+//    }
+
     public void insertBoj(BojInsertDTO bojInsertDTO, @AuthenticationPrincipal PrincipalDetails principal) throws Exception {
-// 현재 인증된 사용자의 이메일로 User 엔티티를 조회
+        // 현재 인증된 사용자의 이메일로 User 엔티티를 조회
         User user = userRepository.findByEmail(principal.getUser().getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
 
-        user.setBojId(bojInsertDTO.getBojId());
-        // bojId 중복 확인
-        if (userRepository.findByBojId(bojInsertDTO.getBojId()).isPresent()) {
+        // bojId 중복 확인 (자기 자신인지 확인)
+        Optional<User> existingUserWithBojId = userRepository.findByBojId(bojInsertDTO.getBojId());
+        if (existingUserWithBojId.isPresent() && !existingUserWithBojId.get().getUserId().equals(user.getUserId())) {
             throw new BojIdExistException(ErrorStatus.BOJ_ID_EXISTS);
-        } else if (solvedAcService.getSolvedAcProfile(bojInsertDTO.getBojId()) == null) {
+        }
+
+        // bojId 존재 여부 확인
+        if (solvedAcService.getSolvedAcProfile(bojInsertDTO.getBojId()) == null) {
             throw new BojIdExistException(ErrorStatus.BOJ_ID_NOT_EXISTS);
         }
+
+        // bojId 및 bojPassword 저장
+        user.setBojId(bojInsertDTO.getBojId());
         user.setBojPassword(encrypt(bojInsertDTO.getBojPassword()));
-        // User 엔티티를 저장
         userRepository.save(user);
 
-        // SolvedAcService를 사용하여 유저 정보를 업데이트
+        // Solved.ac 정보 업데이트
         updateUserSolvedAcData(bojInsertDTO.getBojId());
     }
+
 
     public List<ZandiDTO> getUserActivity(User user) {
         return submittedProblemRepository.findGroupedByDate(user, ProblemStatus.SOLVED);
