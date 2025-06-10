@@ -45,6 +45,8 @@ public class User {
     @Column(name = "handle", unique = true)
     private String handle;
 
+    private String nickname;
+
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
@@ -77,7 +79,7 @@ public class User {
     @Builder
     public User
             (String name, String email, String picture, Role role,
-             String provider, String providerId) {
+             String provider, String providerId, String nickname) {
         this.name = name;
         this.email = email;
         this.picture = picture;
@@ -85,6 +87,7 @@ public class User {
         this.provider = provider;
         this.providerId = providerId;
         this.createdAt = LocalDateTime.now();
+        this.nickname = nickname;
     }
 
     public User update(String name, String picture) {

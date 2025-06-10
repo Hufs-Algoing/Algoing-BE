@@ -31,12 +31,15 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService impleme
         String name = provider + "_" + providerId;
         String email = oAuth2User.getAttribute("email");
         String picture = oAuth2User.getAttribute("picture");
+        String nickname = oAuth2User.getAttribute("name");
+
         Role role = Role.USER;
 
         User userEntity = userRepository.findByEmail(email).orElse(null);
         if (userEntity == null) {
             userEntity = User.builder()
                     .name(name)
+                    .nickname(nickname)
                     .email(email)
                     .picture(picture)
                     .role(role)
