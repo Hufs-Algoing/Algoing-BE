@@ -1,6 +1,7 @@
 package com.hufs.algoing.global.oauth;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,17 +15,24 @@ import java.util.Map;
 public class AuthController {
 
     @PostMapping("/api/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
-        // JWT 토큰 쿠키 삭제
-        Cookie cookie = new Cookie("Authorization", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
 
-        // 프론트엔드에서 처리할 수 있도록 응답
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("Authorization".equals(cookie.getName())) {
+                    Cookie deleteCookie = new Cookie("Authorization", null);
+                    deleteCookie.setMaxAge(0);
+                    deleteCookie.setPath("/");  // 원래 쿠키와 동일한 path
+                    deleteCookie.setHttpOnly(true);
+                    // deleteCookie.setDomain(".al-going.com");
+                    response.addCookie(deleteCookie);
+                    break;
+                }
+            }
+        }
+
         return ResponseEntity.ok()
-                .header("Location", "/login")
-                .body(Map.of("redirectUrl", "/login"));
+                .body(Map.of("redirectUrl", "https://www.al-going.com/login"));
     }
 }

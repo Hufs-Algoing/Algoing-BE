@@ -60,6 +60,7 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/webjars/**",
                                 "/**").permitAll()
+                        .requestMatchers("/api/logout").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -77,12 +78,12 @@ public class SecurityConfig {
                         .successHandler(customOAuth2SuccessHandler)
                         .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
                                 .userService(principalOauth2UserService))
-                )
-                .logout(logout -> logout
-                                .logoutUrl("/logout")
-                                .logoutSuccessUrl("/")
-                                .invalidateHttpSession(true)
                 );
+//                .logout(logout -> logout
+//                                .logoutUrl("/logout")
+//                                .logoutSuccessUrl("/")
+//                                .invalidateHttpSession(true)
+//                         );
         return http.build();
     }
 
