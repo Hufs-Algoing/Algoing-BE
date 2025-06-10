@@ -60,11 +60,11 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
 
         if (user.getBojId() == null) {
-            //response.sendRedirect("https://al-going.com/profile");
-            response.sendRedirect("http://localhost:3000/profile");
+            response.sendRedirect("https://al-going.com/profile");
+            //response.sendRedirect("http://localhost:3000/profile");
         } else {
-            //response.sendRedirect("https://al-going.com/main");
-            response.sendRedirect("http://localhost:3000/main");
+            response.sendRedirect("https://al-going.com/main");
+            //response.sendRedirect("http://localhost:3000/main");
         }
     }
 
