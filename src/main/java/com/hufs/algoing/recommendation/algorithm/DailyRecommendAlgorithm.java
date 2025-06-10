@@ -42,7 +42,7 @@ public class DailyRecommendAlgorithm {
                 .filter(problem -> !solvedProblemIds.contains(problem.getProblemId())) // 유저가 푼 문제 제외
                 .map(problem -> {
                     // 각 문제 태그 추출
-                    String problemTag = problem.getTag();
+                    String problemTag = problem.getTagNames();
                     double typeSimilarity = calculateCosineSimilarity(userProblemTags, problemTag); // 유사도 계산
 
                     // 점수 계산
@@ -71,7 +71,7 @@ public class DailyRecommendAlgorithm {
     private static List<String> calculateUserProblemTags(User user, List<SubmittedProblem> solvedProblems, List<Problem> problems) {
         return solvedProblems.stream()
                 .filter(solvedProblem -> solvedProblem.getUserId().equals(user))
-                .map(solvedProblem -> solvedProblem.getProblemId().getTag())
+                .map(solvedProblem -> solvedProblem.getProblemId().getTagNames())
                 .filter(tagStr -> tagStr != null && !tagStr.isEmpty())
                 .flatMap(tagStr -> List.of(tagStr.split(",")).stream())
                 .distinct()

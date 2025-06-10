@@ -50,7 +50,7 @@ public class WeaknessRecommendAlgorithm {
                    .map(p -> new WeaknessRecommendDTO(
                            p.getProblemId(),
                            p.getTitle(),
-                           p.getTag(),
+                           p.getTagNames(),
                            p.getLevel(),
                            0.0 // 기본 점수 없음
                    ))
@@ -145,7 +145,7 @@ public class WeaknessRecommendAlgorithm {
                     double distanceScore= 1/(distance+1);
 
                     //문제 유형 가중치 합산
-                    String allTag=r.getProblem().getTag();
+                    String allTag=r.getProblem().getTagNames();
                     double typeWeightSum = 0.0;
                     if(allTag!=null && !allTag.isEmpty()){
                         String[] tags=allTag.split(",");
