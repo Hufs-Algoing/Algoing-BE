@@ -52,7 +52,7 @@ public class User {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    //여기까지 회원가입 시 생성됨
+    // 여기까지 회원가입 시 생성됨
 
     private String bio;
 
