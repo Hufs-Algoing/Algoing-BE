@@ -1,7 +1,5 @@
 package com.hufs.algoing.user.dto;
 
-import com.hufs.algoing.problem.entity.Problem;
-import com.hufs.algoing.user.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 

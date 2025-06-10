@@ -5,7 +5,6 @@ import com.hufs.algoing.global.exception.custom.BojIdExistException;
 import com.hufs.algoing.global.exception.custom.BojIdNotExistException;
 import com.hufs.algoing.global.exception.custom.ProblemNotFoundException;
 import com.hufs.algoing.global.exception.custom.UserNotFoundException;
-import com.hufs.algoing.global.jwt.JwtUtil;
 import com.hufs.algoing.global.oauth.PrincipalDetails;
 import com.hufs.algoing.problem.dto.SubmittedProblemDTO;
 import com.hufs.algoing.problem.dto.ZandiDTO;
@@ -26,46 +25,38 @@ import com.hufs.algoing.user.entity.User;
 import com.hufs.algoing.user.repository.BookMarkRepository;
 import com.hufs.algoing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private static final String AES_ALGORITHM = "AES";
     private static final String SECRET_KEY = "1234567890123456"; // 16-byte key (예제용)
-    private final UserRepository userRepository;
-    @Autowired
-    private SolvedAcService solvedAcService;
-    @Autowired
-    private SubmittedProblemRepository submittedProblemRepository;
-    @Autowired
-    private BookMarkRepository bookMarkRepository;
+
     @Qualifier("reviewCustomRepositoryImpl")
-    @Autowired
-    private ReviewCustomRepository reviewCustomRepository;
-    @Autowired
-    private ProblemRepository problemRepository;
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final ReviewCustomRepository reviewCustomRepository;
+    private final UserRepository userRepository;
+    private final SolvedAcService solvedAcService;
+    private final SubmittedProblemRepository submittedProblemRepository;
+    private final BookMarkRepository bookMarkRepository;
+    private final ProblemRepository problemRepository;
 
-    public User getUserByUserId(Long userId) {
-        // User 엔티티를 userId로 조회
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(ErrorStatus.USER_NOT_FOUND));
-    }
-
-    public void updateUserSolvedAcData(String bojId) throws Exception {
+    public void updateUserSolvedAcData(String bojId){
         // solved.ac API로부터 유저 정보 가져오기
         SolvedAcProfileDTO profile = solvedAcService.getSolvedAcProfile(bojId);
         // User 엔티티로 변환 후 저장
@@ -74,32 +65,8 @@ public class UserService {
         user.setBio(profile.getBio());
         user.setTier(profile.getTier());
 //        user.setSolvedCount(profile.getSolvedCount());
-
         userRepository.save(user);
-
     }
-
-//    // 가입 후 핸들 입력
-//    public void insertBoj(BojInsertDTO bojInsertDTO, @AuthenticationPrincipal PrincipalDetails principal) throws Exception {
-//// 현재 인증된 사용자의 이메일로 User 엔티티를 조회
-//        User user = userRepository.findByEmail(principal.getUser().getEmail())
-//                .orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
-//
-//        user.setBojId(bojInsertDTO.getBojId());
-//        // bojId 중복 확인
-//        if (userRepository.findByBojId(bojInsertDTO.getBojId()).isPresent()) {
-//            throw new BojIdExistException(ErrorStatus.BOJ_ID_EXISTS);
-//        } else if (solvedAcService.getSolvedAcProfile(bojInsertDTO.getBojId()) == null) {
-//            throw new BojIdExistException(ErrorStatus.BOJ_ID_NOT_EXISTS);
-//        }
-//        user.setBojPassword(encrypt(bojInsertDTO.getBojPassword()));
-//        // User 엔티티를 저장
-//        userRepository.save(user);
-//
-//        // SolvedAcService를 사용하여 유저 정보를 업데이트
-//        updateUserSolvedAcData(bojInsertDTO.getBojId());
-//    }
-
     public void insertBoj(BojInsertDTO bojInsertDTO, @AuthenticationPrincipal PrincipalDetails principal) throws Exception {
         // 현재 인증된 사용자의 이메일로 User 엔티티를 조회
         User user = userRepository.findByEmail(principal.getUser().getEmail())
@@ -226,7 +193,7 @@ public class UserService {
 
     }
 
-    private String encrypt(String data) throws Exception {
+    private String encrypt(String data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), AES_ALGORITHM);
         Cipher cipher = Cipher.getInstance(AES_ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, keySpec);
@@ -234,7 +201,7 @@ public class UserService {
         return Base64.getEncoder().encodeToString(encrypted);
     }
 
-    public String decrypt(String encryptedData) throws Exception {
+    public String decrypt(String encryptedData) throws InvalidKeyException, NoSuchPaddingException,NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException {
         SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), AES_ALGORITHM);
         Cipher cipher = Cipher.getInstance(AES_ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, keySpec);

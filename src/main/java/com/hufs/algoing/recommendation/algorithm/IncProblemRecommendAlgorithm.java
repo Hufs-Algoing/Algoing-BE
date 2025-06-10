@@ -70,7 +70,7 @@ public class IncProblemRecommendAlgorithm {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
         System.out.println(weakTags);
-        
+
         //유저가 아직 풀지 않은 문제들 중에서 약한 태그 포함된 문제 찾기
         List<Problem> allProblems = problemRepository.findAll();
         Set<Long> solvedProblemIds = userSubmitted.stream()

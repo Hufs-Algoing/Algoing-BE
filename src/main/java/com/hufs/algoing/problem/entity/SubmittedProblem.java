@@ -19,53 +19,38 @@ import java.util.List;
 @Entity
 @Table
 public class SubmittedProblem {
+    @OneToMany(mappedBy = "submittedProblem")
+    private final List<Post> posts = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true)
     private Long submittedProblemId;
-
     @ManyToOne(cascade = CascadeType.MERGE, targetEntity = User.class)
     @JoinColumn(name = "user_id")
     private User userId;
-
     @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Problem.class)
     @JoinColumn(name = "problem_id")
     private Problem problemId;
-
     @Column(length = 256)
     @Lob
     private String answer;
-
     @Column
     private String language;
-
     @Column
     @Enumerated(EnumType.STRING)
     private ProblemStatus status;
-
     @CreatedDate
     @Column
     private LocalDateTime submittedAt;
-
     @Column
     private LocalDate submittedDate;
-
     private String recommendationSessionId;
 
-    @OneToMany(mappedBy = "submittedProblem")
-    private List<Post> posts = new ArrayList<>();
-
-
-    // submittedDate는 submittedAt에서 자동 생성
-    @PrePersist
-    public void prePersist() {
-        this.submittedDate = LocalDate.from(submittedAt);
-    }
 
     @Builder
     public SubmittedProblem(
             User userId, Problem problemId,
-            String answer, LocalDateTime submittedAt, LocalDate submittedDate, String language,
+            String answer,String language,
             ProblemStatus status, String recommendationSessionId) {
         this.userId = userId;
         this.problemId = problemId;
@@ -75,6 +60,12 @@ public class SubmittedProblem {
         this.status = status;
         this.submittedDate = LocalDate.now();
         this.recommendationSessionId = recommendationSessionId;
+    }
+
+    // submittedDate는 submittedAt에서 자동 생성
+    @PrePersist
+    public void prePersist() {
+        this.submittedDate = LocalDate.from(submittedAt);
     }
 
     //Solved일때만 true

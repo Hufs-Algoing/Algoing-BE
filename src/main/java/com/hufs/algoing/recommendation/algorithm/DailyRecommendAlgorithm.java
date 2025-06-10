@@ -6,6 +6,7 @@ import com.hufs.algoing.problem.entity.Problem;
 import com.hufs.algoing.user.entity.User;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DailyRecommendAlgorithm {
@@ -29,10 +30,35 @@ public class DailyRecommendAlgorithm {
                     return isMatchingUser&& isSolved;
                 }) // 해당 유저가 푼 문제만 필터링
                 .map(solvedProblem -> {
-                    Long problemId = solvedProblem.getProblemId().getProblemId();
-                    return problemId; // 푼 문제의 문제번호만 추출
+                    return solvedProblem.getProblemId().getProblemId(); // 푼 문제의 문제번호만 추출
                 })
                 .collect(Collectors.toList());  // 리스트로 변환
+
+        //리뷰가 7개 이하면 해당 유저 티어 +-2차이의 문제 추천
+        if(solvedProblemIds==null || solvedProblemIds.size()==0 ||solvedProblemIds.size() <= 7){
+            int userLevel = user.getTier(); // 유저 티어
+
+            Set<Long> userSolvedproblem = solvedProblems.stream()
+                    .filter(p -> "solved".equalsIgnoreCase(String.valueOf(p.getStatus())))
+                    .map(p -> p.getProblemId().getProblemId())
+                    .collect(Collectors.toSet());
+
+            List<Problem> randomProblem = problems.stream()
+                    .filter(p -> Math.abs(p.getLevel() - userLevel) <= 2)
+                    .filter(p -> !userSolvedproblem.contains(p.getProblemId()))
+                    .limit(3)
+                    .collect(Collectors.toList());
+
+            return randomProblem.stream()
+                    .map(p -> new DailyRecommendDTO(
+                            p.getProblemId(),
+                            p.getTitle(),
+                            Math.toIntExact(p.getLevel()),
+                            p.getTagNames(),
+                            0.0 // 기본 점수 없음
+                    ))
+                    .collect(Collectors.toList());
+        }
 
         // 유저가 푼 문제 유형(tag)
         List<String> userProblemTags = calculateUserProblemTags(user, solvedProblems, problems);
@@ -126,8 +152,7 @@ public class DailyRecommendAlgorithm {
             return 0.0; // 벡터 크기가 0이면 유사도 0
         }
 
-        double similarity = dotProduct / (Math.sqrt(userNorm) * Math.sqrt(problemNorm)); // 코사인 유사도 계산
-        return similarity;
+        return dotProduct / (Math.sqrt(userNorm) * Math.sqrt(problemNorm));
     }
 
     private static double calculateScore(User user, Problem problem, List<String> userProblemTags, double typeSimilarity) {

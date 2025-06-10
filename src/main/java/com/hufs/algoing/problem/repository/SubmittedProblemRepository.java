@@ -16,8 +16,6 @@ public interface SubmittedProblemRepository extends JpaRepository<SubmittedProbl
 
     List<SubmittedProblem> findByUserId(User userId);
 
-//    List<SubmittedProblem> findByUserIdOrderBySubmittedAtAsc(User userId);
-
     @Query("SELECT new com.hufs.algoing.problem.dto.ZandiDTO(s.submittedDate, COUNT(s)) " +
             "FROM SubmittedProblem s " +
             "WHERE s.userId = :userId " +

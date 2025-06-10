@@ -4,6 +4,6 @@ import com.hufs.algoing.global.code.BaseErrorCode;
 import com.hufs.algoing.global.exception.GeneralException;
 
 public class HintNotFoundException extends GeneralException {
-    public HintNotFoundException(BaseErrorCode errorCode) {super(errorCode);;
+    public HintNotFoundException(BaseErrorCode errorCode) {super(errorCode);
     }
 }

@@ -4,7 +4,6 @@ import com.hufs.algoing.user.entity.Role;
 import com.hufs.algoing.user.entity.User;
 import com.hufs.algoing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -16,8 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PrincipalOauth2UserService extends DefaultOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
 
     @Override
@@ -32,7 +30,6 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService impleme
         String email = oAuth2User.getAttribute("email");
         String picture = oAuth2User.getAttribute("picture");
         String nickname = oAuth2User.getAttribute("name");
-
         Role role = Role.USER;
 
         User userEntity = userRepository.findByEmail(email).orElse(null);
@@ -48,12 +45,6 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService impleme
                     .build();
             userRepository.save(userEntity);
         }
-
-
-        System.out.println("getAccessToken : " + userRequest.getAccessToken());
-        System.out.println("getClientRegistration : " + userRequest.getClientRegistration());
-        System.out.println("getAttributes : " + super.loadUser(userRequest).getAttributes());
-
 
         return new PrincipalDetails(userEntity, oAuth2User.getAttributes());
     }

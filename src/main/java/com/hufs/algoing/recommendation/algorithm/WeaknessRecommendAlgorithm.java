@@ -32,30 +32,30 @@ public class WeaknessRecommendAlgorithm {
         System.out.println(userReview);
 
         //리뷰가 7개 이하면 해당 유저 티어 +-2차이의 문제 추천
-       if(userReview==null || userReview.size()==0 || userReview.size() <= 7){
-           int userLevel = user.getTier(); // 유저 티어
+        if(userReview==null || userReview.size()==0 || userReview.size() <= 7){
+            int userLevel = user.getTier(); // 유저 티어
 
-           Set<Long> solvedProblemIds = submittedProblems.stream()
-                   .filter(p -> "solved".equalsIgnoreCase(String.valueOf(p.getStatus())))
-                   .map(p -> p.getProblemId().getProblemId())
-                   .collect(Collectors.toSet());
+            Set<Long> solvedProblemIds = submittedProblems.stream()
+                    .filter(p -> "solved".equalsIgnoreCase(String.valueOf(p.getStatus())))
+                    .map(p -> p.getProblemId().getProblemId())
+                    .collect(Collectors.toSet());
 
-           List<Problem> randomProblem = problems.stream()
-                   .filter(p -> Math.abs(p.getLevel() - userLevel) <= 2)
-                   .filter(p -> !solvedProblemIds.contains(p.getProblemId()))
-                   .limit(3)
-                   .collect(Collectors.toList());
+            List<Problem> randomProblem = problems.stream()
+                    .filter(p -> Math.abs(p.getLevel() - userLevel) <= 2)
+                    .filter(p -> !solvedProblemIds.contains(p.getProblemId()))
+                    .limit(3)
+                    .collect(Collectors.toList());
 
-           return randomProblem.stream()
-                   .map(p -> new WeaknessRecommendDTO(
-                           p.getProblemId(),
-                           p.getTitle(),
-                           p.getTagNames(),
-                           p.getLevel(),
-                           0.0 // 기본 점수 없음
-                   ))
-                   .collect(Collectors.toList());
-       }
+            return randomProblem.stream()
+                    .map(p -> new WeaknessRecommendDTO(
+                            p.getProblemId(),
+                            p.getTitle(),
+                            p.getTagNames(),
+                            p.getLevel(),
+                            0.0 // 기본 점수 없음
+                    ))
+                    .collect(Collectors.toList());
+        }
 
         //약점 분석-각 점수 평균
         //유저 가독성 평균 계산
@@ -136,8 +136,8 @@ public class WeaknessRecommendAlgorithm {
                     //작을수록 유사
                     double distance=Math.sqrt(
                             Math.pow(problemRed-averageUserRead,2)
-                            + Math.pow(problemOpt-averageUserOptimize,2)
-                            + Math.pow(problemDup-averageUserduplicate,2)
+                                    + Math.pow(problemOpt-averageUserOptimize,2)
+                                    + Math.pow(problemDup-averageUserduplicate,2)
                     );
 
                     //유사도 점수 계산
@@ -154,10 +154,10 @@ public class WeaknessRecommendAlgorithm {
                         }
                     }
 
-                //유형-점수 합산
-                double finalScore = typeWeightSum * 0.4 + distanceScore * 0.6; //유형은 결과에 40% 영향 점수는 60% 영향
+                    //유형-점수 합산
+                    double finalScore = typeWeightSum * 0.4 + distanceScore * 0.6; //유형은 결과에 40% 영향 점수는 60% 영향
 
-                //결과 DTO
+                    //결과 DTO
                     return new WeaknessRecommendDTO(
                             r.getProblem().getProblemId(),
                             r.getProblem().getTitle(),
@@ -181,7 +181,7 @@ public class WeaknessRecommendAlgorithm {
                 .collect(Collectors.toList());
 
         filteredRecommendProblems.forEach(problem -> {
-            problem.setFinalScore(new BigDecimal(problem.getFinalScore()).setScale(3, RoundingMode.HALF_UP).doubleValue());
+            problem.setFinalScore(BigDecimal.valueOf(problem.getFinalScore()).setScale(3, RoundingMode.HALF_UP).doubleValue());
         });
 
         int recommendCount = Math.min(3,filteredRecommendProblems.size());

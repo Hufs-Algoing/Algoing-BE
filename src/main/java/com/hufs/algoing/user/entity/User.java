@@ -20,10 +20,10 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private Long userId;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     private String email;
 
     //Google OAuth2.0에서 제공하는 이름
@@ -38,32 +38,20 @@ public class User {
     //비밀번호는 암호화되어 저장, 사용할때 복호화 해야함
     @Column(unique = true)
     private String bojId;
-
     private String bojPassword;
-
-    // Solved.ac에서 사용하는 handle입니다.
-    @Column(name = "handle", unique = true)
-    private String handle;
 
     private String nickname;
 
-
     @CreatedDate
-    @Column(name = "created_at", nullable = false)
+    @NotNull
     private LocalDateTime createdAt;
 
-    // 여기까지 회원가입 시 생성됨
-
     private String bio;
-
     private String picture;
 
     private Integer tier;
 
-    @Column(name = "solved_count")
     private int solvedCount;
-
-    @Column(name = "user_point")
     private int userPoint;
 
     @OneToMany(mappedBy = "userId")

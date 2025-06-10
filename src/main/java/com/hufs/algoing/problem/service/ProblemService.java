@@ -1,22 +1,19 @@
 package com.hufs.algoing.problem.service;
 
-import com.hufs.algoing.global.code.ApiResponse;
 import com.hufs.algoing.problem.entity.Problem;
 import com.hufs.algoing.problem.repository.ProblemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProblemService {
 
-    @Autowired
-    private ProblemRepository problemRepository;
-
-    @Autowired
-    private ProblemCrawlService problemCrawlService;
+    private final ProblemRepository problemRepository;
+    private final ProblemCrawlService problemCrawlService;
 
     public Problem getOrCrawlProblem(Long problemId){
 
@@ -61,6 +58,7 @@ public class ProblemService {
                 Long id = Long.parseLong(keyword);
                 problemRepository.findById(id).ifPresent(results::add);
             } catch (NumberFormatException ignored) {
+                // 숫자가 아닌 경우 무시
             }
         }
 

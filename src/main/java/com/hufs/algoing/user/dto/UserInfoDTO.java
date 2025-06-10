@@ -14,7 +14,6 @@ public class UserInfoDTO {
     private String email;
     private String name;
     private Role role;
-    private String handle;
     private String bojId;
     private String bio;
     private String picture;
@@ -31,7 +30,6 @@ public class UserInfoDTO {
         this.email = user.getEmail();
         this.name = user.getName();
         this.role = user.getRole();
-        this.handle = user.getHandle();
         this.bojId = user.getBojId();
         this.bio = user.getBio();
         this.picture = user.getPicture();

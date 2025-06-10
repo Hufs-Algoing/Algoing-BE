@@ -1,16 +1,12 @@
 package com.hufs.algoing.global.config;
 
-//import com.hufs.algoing.global.jwt.JwtAuthenticationFilter;
-
 import com.hufs.algoing.global.jwt.JwtFilter;
 import com.hufs.algoing.global.jwt.JwtUtil;
 import com.hufs.algoing.global.oauth.CustomOAuth2SuccessHandler;
 import com.hufs.algoing.global.oauth.PrincipalDetailsService;
 import com.hufs.algoing.global.oauth.PrincipalOauth2UserService;
 import com.hufs.algoing.user.entity.Role;
-import com.hufs.algoing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,33 +34,23 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private PrincipalOauth2UserService principalOauth2UserService;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
-    @Autowired
-    private JwtUtil jwtUtil;
-    @Autowired
-    private PrincipalDetailsService principalDetailsService;
-
     @Bean
     public WebSecurityCustomizer configure() {
-        return (web) -> web.ignoring()
+        return web -> web.ignoring()
                 .requestMatchers("/static/**");
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, PrincipalOauth2UserService principalOauth2UserService,
+                                           CustomOAuth2SuccessHandler customOAuth2SuccessHandler, JwtUtil jwtUtil,
+                                           PrincipalDetailsService principalDetailsService) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .cors((corsConfig) ->
-                        corsConfig.configurationSource(corsConfigurationSource())
+                .cors(corsConfig -> corsConfig.configurationSource(corsConfigurationSource())
                 )
-                .authorizeHttpRequests((auth) -> auth
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                         .requestMatchers("/login", "/signup").permitAll()
                         .requestMatchers("/oauth2/authorization/**").permitAll()
@@ -83,7 +69,7 @@ public class SecurityConfig {
                         new JwtFilter(jwtUtil, principalDetailsService),
                         UsernamePasswordAuthenticationFilter.class
                 )
-                .oauth2Login((oauth) -> oauth
+                .oauth2Login(oauth -> oauth
                         .authorizationEndpoint(endpoint -> endpoint
                                 .authorizationRequestRepository(authorizationRequestRepository())
                         )
@@ -92,8 +78,8 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
                                 .userService(principalOauth2UserService))
                 )
-                .logout((logout) ->
-                        logout.logoutUrl("/logout")
+                .logout(logout -> logout
+                                .logoutUrl("/logout")
                                 .logoutSuccessUrl("/")
                                 .invalidateHttpSession(true)
                 );

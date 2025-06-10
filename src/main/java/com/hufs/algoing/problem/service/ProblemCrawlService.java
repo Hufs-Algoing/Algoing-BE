@@ -35,10 +35,6 @@ public class ProblemCrawlService{
         return BASE_URL + problemId;
     }
 
-//    public String getProblemUrlForSolvedAc(Long problemId) {
-//        return "https://solved.ac/api/v3/problem/show" + problemId;
-//    }
-
     public Problem crawlProblem(Long problemId) {
 
         List<SolvedAcTagDTO> tags = solvedAcService.getSolvedAcProblemInfo(problemId).getTags();
@@ -95,7 +91,6 @@ public class ProblemCrawlService{
                 visited.add(Long.valueOf(problemId));
                 Problem prob = crawlProblem(Long.valueOf(problemId));
                 uniqueProblems.add(prob);
-                System.out.println("크롤링한 문제 ID: " + problemId);
             }
             if (uniqueProblems.size() >= count) break;
         }
