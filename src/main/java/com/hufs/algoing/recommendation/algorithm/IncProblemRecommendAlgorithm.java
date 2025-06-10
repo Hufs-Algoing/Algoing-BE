@@ -45,7 +45,7 @@ public class IncProblemRecommendAlgorithm {
                     .map(p -> new IncProblemRecommendDTO(
                             p.getProblemId(),
                             p.getTitle(),
-                            p.getTag(),
+                            p.getTagNames(),
                             p.getLevel()
                     ))
                     .collect(Collectors.toList());
@@ -70,7 +70,7 @@ public class IncProblemRecommendAlgorithm {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
         System.out.println(weakTags);
-        
+
         //유저가 아직 풀지 않은 문제들 중에서 약한 태그 포함된 문제 찾기
         List<Problem> allProblems = problemRepository.findAll();
         Set<Long> solvedProblemIds = userSubmitted.stream()
@@ -99,7 +99,7 @@ public class IncProblemRecommendAlgorithm {
     private static List<String> calculateUserSubmitTags(User user, List<SubmittedProblem> submittedProblems) {
         return submittedProblems.stream()
                 .filter(s -> s.getUserId().equals(user.getUserId()))
-                .map(s -> s.getProblemId().getTag())
+                .map(s -> s.getProblemId().getTagNames())
                 .filter(tagStr -> tagStr != null && !tagStr.isEmpty())
                 .flatMap(tagStr -> List.of(tagStr.split(",")).stream())
                 .distinct()
@@ -139,7 +139,7 @@ public class IncProblemRecommendAlgorithm {
 
             if (!isSolved) continue; //문제를 아예 맞추지 못한 경우 계산에서 제외
 
-            String tagStr = problem.getTag();
+            String tagStr = problem.getTagNames();
             if (tagStr == null || tagStr.isEmpty()) continue;
 
             for (String tag : tagStr.split(",")) {
@@ -165,7 +165,7 @@ public class IncProblemRecommendAlgorithm {
     private boolean similarWeakTags(Problem problem, List<String> weakTags){
         if (problem.getTag() == null || problem.getTag().isEmpty()) return false;
 
-        Set<String> problemTags = Arrays.stream(problem.getTag().split(","))
+        Set<String> problemTags = Arrays.stream(problem.getTagNames().split(","))
                 .map(String::trim)
                 .collect(Collectors.toSet());
 
@@ -184,9 +184,9 @@ public class IncProblemRecommendAlgorithm {
 
     // 문제와 자카드 유사도 총합 계산
     private double calculateSimilarity(Problem problem, List<String> weakTags) {
-        if (problem.getTag() == null || problem.getTag().isEmpty()) return 0.0;
+        if (problem.getTagNames() == null || problem.getTagNames().isEmpty()) return 0.0;
 
-        Set<String> problemTags = Arrays.stream(problem.getTag().split(","))
+        Set<String> problemTags = Arrays.stream(problem.getTagNames().split(","))
                 .map(String::trim)
                 .collect(Collectors.toSet());
 
