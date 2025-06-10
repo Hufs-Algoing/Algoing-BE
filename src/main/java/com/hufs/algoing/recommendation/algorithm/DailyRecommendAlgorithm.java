@@ -3,9 +3,11 @@ package com.hufs.algoing.recommendation.algorithm;
 import com.hufs.algoing.problem.entity.SubmittedProblem;
 import com.hufs.algoing.recommendation.dto.DailyRecommendDTO;
 import com.hufs.algoing.problem.entity.Problem;
+import com.hufs.algoing.recommendation.dto.WeaknessRecommendDTO;
 import com.hufs.algoing.user.entity.User;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DailyRecommendAlgorithm {
@@ -21,6 +23,7 @@ public class DailyRecommendAlgorithm {
     // 유저 정보(user테이블) + 유저가 푼 문제(user solved problem테이블) + 문제(problem테이블) 리스트 받아서 추천리스트 만듦.
     public static List<DailyRecommendDTO> recommend(User user, List<Problem> problems, List<SubmittedProblem> solvedProblems) {
 
+
         // 유저가 푼 문제 번호 -> USER_SOLVED_PROBLEM 테이블 Problem_num값 가져오기
         List<Long> solvedProblemIds = solvedProblems.stream()
                 .filter(solvedProblem -> {
@@ -32,6 +35,32 @@ public class DailyRecommendAlgorithm {
                     return solvedProblem.getProblemId().getProblemId(); // 푼 문제의 문제번호만 추출
                 })
                 .collect(Collectors.toList());  // 리스트로 변환
+
+        //리뷰가 7개 이하면 해당 유저 티어 +-2차이의 문제 추천
+        if(solvedProblemIds==null || solvedProblemIds.size()==0 ||solvedProblemIds.size() <= 7){
+            int userLevel = user.getTier(); // 유저 티어
+
+            Set<Long> userSolvedproblem = solvedProblems.stream()
+                    .filter(p -> "solved".equalsIgnoreCase(String.valueOf(p.getStatus())))
+                    .map(p -> p.getProblemId().getProblemId())
+                    .collect(Collectors.toSet());
+
+            List<Problem> randomProblem = problems.stream()
+                    .filter(p -> Math.abs(p.getLevel() - userLevel) <= 2)
+                    .filter(p -> !solvedProblemIds.contains(p.getProblemId()))
+                    .limit(3)
+                    .collect(Collectors.toList());
+
+            return randomProblem.stream()
+                    .map(p -> new DailyRecommendDTO(
+                            p.getProblemId(),
+                            p.getTitle(),
+                            Math.toIntExact(p.getLevel()),
+                            p.getTagNames(),
+                            0.0 // 기본 점수 없음
+                    ))
+                    .collect(Collectors.toList());
+        }
 
         // 유저가 푼 문제 유형(tag)
         List<String> userProblemTags = calculateUserProblemTags(user, solvedProblems, problems);
