@@ -89,7 +89,7 @@ dependencies {
     // JSoup
     implementation 'org.jsoup:jsoup:1.15.3'
 
-    // Selenium
+    // S elenium
     implementation 'org.seleniumhq.selenium:selenium-java:4.6.0'
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
