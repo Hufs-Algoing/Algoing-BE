@@ -59,7 +59,7 @@ public class UserService {
     public void updateUserSolvedAcData(String bojId){
         // solved.ac API로부터 유저 정보 가져오기
         SolvedAcProfileDTO profile = solvedAcService.getSolvedAcProfile(bojId);
-        // User 엔티티로 변환  후 저장
+        // User 엔 티티로 변환  후 저장
         User user = userRepository.findByBojId(bojId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.setBio(profile.getBio());
