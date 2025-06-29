@@ -6,7 +6,7 @@
 
 
 ## Algoing 소개
-![Image](https://github.com/user-attachments/assets/0090616f-615d-4d5f-b1f5-5e847c2baec3)
+![Image](https://github.com/user-attachments/assets/d64c8c88-ea67-4dce-a35e-e9c31556256d)
 
 Algoing(알고잉)은 **사용자의 풀이 이력, 코드 품질, 선호 유형** 등을 분석하여  **맞춤형 알고리즘 문제를 추천**하고, **AI 기반 코드 리뷰를 통해 개발자의 실력을 지속적으로 향상**시킬 수 있도록 설계된 **웹 기반 학습 플랫폼**입니다.
 
@@ -84,32 +84,29 @@ graph LR
 
 ## 서비스 화면 예시
 
-<h3>메인 화면</h3>
-<img src="https://github.com/user-attachments/assets/4bf0177e-08bf-4380-b270-2bbe83ce4c5e" alt="메인 화면" />
+### 메인 화면
+![Image](https://github.com/user-attachments/assets/4bf0177e-08bf-4380-b270-2bbe83ce4c5e)
+### 문제 추천 페이지
+![Image](https://github.com/user-attachments/assets/0a32de0e-8319-4548-9201-83079e084d13)
 
-<h3>문제 추천 페이지</h3>
-<img src="https://github.com/user-attachments/assets/6a16ef86-b36d-488d-8fe3-366aa88fce92" alt="문제 추천 페이지" />
+### 문제 풀이 페이지
 
-<h3>문제 풀이 페이지</h3>
-<img src="https://github.com/user-attachments/assets/137e3541-1b3d-4a78-9786-0de7ec33d531" alt="AI 코드리뷰" />
+![Image](https://github.com/user-attachments/assets/6b938f70-047f-4210-b4d1-9e7eaa3cbe2f)
 
-<h3>AI 코드리뷰 & 제출 결과</h3>
-<img src="https://github.com/user-attachments/assets/83e91c32-9449-470d-9055-18323a18146f" alt="제출 결과 1" />
-<img src="https://github.com/user-attachments/assets/6ce40833-2c24-4738-9e85-48bb393e01a8" alt="제출 결과 2" />
+### AI 코드리뷰 & 제출 결과
+![Image](https://github.com/user-attachments/assets/3438c449-a8b3-4ec8-b192-05aa1fbe7493)
+![Image](https://github.com/user-attachments/assets/68fa0f90-9531-485a-8546-12839764b583)
 
-<h3>마이 페이지</h3>
-<img src="https://github.com/user-attachments/assets/e6e25aab-26b5-41c7-91ba-0ea5512a6bb7" alt="마이페이지 1" />
-<img src="https://github.com/user-attachments/assets/b0755a43-2714-4bfe-a3be-111e501d0ce9" alt="마이페이지 2" />
-<img src="https://github.com/user-attachments/assets/8350ad6d-2e1b-44e4-9288-6417f5e906b4" alt="마이페이지 3" />
+### 마이 페이지
+![Image](https://github.com/user-attachments/assets/51c66c42-c50d-4626-9d9f-4489c49e26a0)
+![Image](https://github.com/user-attachments/assets/28e4a87b-e245-4442-a954-2bc5d80550ec)
+![Image](https://github.com/user-attachments/assets/62dccb92-9c60-4bb9-a50c-c22fb37fb449)
 
 ## 프로젝트 구조도
-
-### User Flow
-<img src="https://github.com/user-attachments/assets/96af2bb0-32a3-448b-99b2-a18e33104c8a" alt="User Flow" />
-
-### 인프라 구조도
-<img src="https://github.com/user-attachments/assets/23c285aa-2a62-4831-85d1-ab0294a33b08" alt="인프라 구조도" />
-
+#### User Flow
+![Image](https://github.com/user-attachments/assets/f2bf6f7f-f864-4508-86e3-0ecb761c14f4)
+#### 인프라 구조도
+![Image](https://github.com/user-attachments/assets/094b0436-1088-416a-8009-01ba978144cc)
 
 ### Frontend
 - Next.js
@@ -132,4 +129,5 @@ graph LR
 - AWS
 - GitHub Actions (CI/CD)
 - Vercel
+
 
